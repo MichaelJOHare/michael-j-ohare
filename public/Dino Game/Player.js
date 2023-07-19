@@ -43,10 +43,10 @@ export default class Player {
     window.addEventListener("keyup", this.keyup);
 
     //mobile
-    window.removeEventListener("touchstart,", this.touchstart);
+    window.removeEventListener("touchstart", this.touchstart);
     window.removeEventListener("touchend", this.touchend);
 
-    window.addEventListener("touchstart,", this.touchstart);
+    window.addEventListener("touchstart", this.touchstart);
     window.addEventListener("touchend", this.touchend);
   }
 
