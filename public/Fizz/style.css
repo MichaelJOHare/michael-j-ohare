@@ -33,3 +33,7 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   background-color: transparent;
   color: var(--contrast-hover);
 }
+
+#results {
+  padding-left: 20px;
+}
