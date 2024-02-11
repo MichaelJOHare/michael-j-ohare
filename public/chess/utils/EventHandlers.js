@@ -150,13 +150,47 @@ class EventHandlers {
     }
   }
 
+  onTouchStart(event) {
+    const touch = event.touches[0];
+    this.onMouseDown({
+      ...event,
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      button: 0,
+    });
+  }
+
+  onTouchMove(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    this.onMouseMove({
+      ...event,
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      buttons: 1,
+    });
+  }
+
+  onTouchEnd(event) {
+    const touch = event.changedTouches[0];
+    this.onMouseUp({
+      ...event,
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      button: 0,
+    });
+  }
+
   getSquareFromCoordinates(x, y) {
     const rect = this.canvas.getBoundingClientRect();
     const relX = x - rect.left;
     const relY = y - rect.top;
 
-    let col = Math.floor(relX / this.squareSize);
-    let row = Math.floor(relY / this.squareSize);
+    const dpi = window.devicePixelRatio || 1;
+    const scaleX = (rect.width * dpi) / this.canvas.offsetWidth;
+    const scaleY = (rect.height * dpi) / this.canvas.offsetHeight;
+    let col = Math.floor((relX * scaleX) / this.squareSize);
+    let row = Math.floor((relY * scaleY) / this.squareSize);
 
     if (this.isBoardFlipped) {
       col = ChessBoard.COLUMN_LENGTH - 1 - col;

@@ -40,7 +40,6 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  max-width: 1150px;
   margin: auto;
   padding-top: 20px;
   padding-left: 20px;
@@ -83,7 +82,8 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
 #sidebar {
   flex-grow: 1;
   height: 85vmin;
-  max-width: 325px;
+  width: 100%;
+  max-width: 375px;
   margin: 0px 20px 20px 20px;
   display: flex;
   flex-direction: column;

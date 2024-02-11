@@ -5,6 +5,8 @@ console.log("GameController initialized", gameController);
 
 /*
 TO DO
+ - Fix draggingDiv width/height in mobile
+
  - Refactor promotion selector, lots of repeated code
           -- Maybe redo chessboard highlighter to use SVG for highlighting like drawArrow/Circle
 

@@ -319,6 +319,20 @@ class ChessBoardPanel {
       "mouseup",
       this.eventHandlers.onMouseUp.bind(this.eventHandlers)
     );
+
+    this.canvas.addEventListener(
+      "touchstart",
+      this.eventHandlers.onTouchStart.bind(this.eventHandlers)
+    );
+    this.canvas.addEventListener(
+      "touchmove",
+      this.eventHandlers.onTouchMove.bind(this.eventHandlers)
+    );
+    this.canvas.addEventListener(
+      "touchend",
+      this.eventHandlers.onTouchEnd.bind(this.eventHandlers)
+    );
+
     this.canvas.addEventListener("contextmenu", function (event) {
       event.preventDefault();
     });
