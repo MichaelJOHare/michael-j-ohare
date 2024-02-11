@@ -28,12 +28,12 @@ class HeroSection extends HTMLElement {
               </summary>
               <ul role="listbox">
                 <li>
-                  <a href="/public/chess/">Chess Game</a>
+                  <a href="/chess/">Chess Game</a>
                 </li>
-                <li><a href="/public/Dino Game/">Dino Game</a></li>
-                <li><a href="/public/Cube/">Cube</a></li>
+                <li><a href="/Dino Game/">Dino Game</a></li>
+                <li><a href="/Cube/">Cube</a></li>
                 <li>
-                  <a href="/public/Fizz/">FizzBuzz Interview Question</a>
+                  <a href="/Fizz/">FizzBuzz Interview Question</a>
                 </li>
                 <li>
                   <a href="https://github.com/MichaelJOHare/number-guess-game"
