@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="outer-container">
+      <div id="game-container">
+        <div class="chessboard-wrapper">
+          <div id="chessboard-container">
+            <canvas id="chessboard"></canvas>
+            <svg
+              id="chessSVG"
+              style="position: absolute; left: 0; top: 0; z-index: 2"
+              width="600"
+              height="600"
+            >
+              <defs>
+                <marker
+                  id="arrowhead"
+                  markerWidth="10"
+                  markerHeight="7"
+                  refX="0"
+                  refY="3.5"
+                  orient="auto"
+                >
+                  <polygon points="0 0, 10 3.5, 0 7" />
+                </marker>
+              </defs>
+            </svg>
+          </div>
+          <div id="text-areas-container">
+            <textarea id="fen-box" placeholder="FEN"></textarea>
+            <textarea id="pgn-box" placeholder="PGN"></textarea>
+          </div>
+        </div>
+        <div id="sidebar">
+          <div id="move-history-title"><h1>Move History</h1></div>
+          <div id="move-history"></div>
+          <div id="fen-import-container" style="display: none">
+            <textarea id="fen-input" placeholder="Enter FEN"></textarea>
+            <button id="submit-fen">Import FEN</button>
+          </div>
+          <div id="navigation">
+            <button id="prev-move">↩</button>
+            <div id="flip-fen-import">
+              <button id="flip-board">Flip Board</button>
+              <button id="import-from-fen">Import Game from FEN</button>
+              <button id="reset-board">Reset Board</button>
+            </div>
+            <button id="next-move">↪</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/public/chess/main.js"></script>
+  </body>
+</html>
