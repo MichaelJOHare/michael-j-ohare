@@ -214,18 +214,24 @@ class ChessBoardPanel {
   }
 
   setScreen() {
+    let dpi = window.devicePixelRatio || 1;
+
     const size = Math.min(
       this.boardContainer.offsetWidth,
       this.boardContainer.offsetHeight
     );
 
-    this.canvas.width = size;
-    this.canvas.height = size;
+    this.canvas.width = size * dpi;
+    this.canvas.height = size * dpi;
+    this.offscreenCanvas.width = size * dpi;
+    this.offscreenCanvas.height = size * dpi;
 
-    this.squareSize = size / 8;
+    this.canvas.style.width = size + "px";
+    this.canvas.style.height = size + "px";
+    this.offscreenCanvas.style.width = size + "px";
+    this.offscreenCanvas.style.height = size + "px";
 
-    this.offscreenCanvas.width = size;
-    this.offscreenCanvas.height = size;
+    this.squareSize = (size * dpi) / 8;
 
     this.updateSquareSize();
     this.reorderSidebarBasedOnScreenWidth();
