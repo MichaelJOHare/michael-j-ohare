@@ -7,66 +7,19 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="manifest" href="site.webmanifest" />
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2b2d2e" />
     <meta name="msapplication-TileColor" content="#b91d47" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="stylesheet" href="css/pico.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <title>Michael O'Hare</title>
+    <script src="js/hero-section.js" defer></script>
+    <script src="js/theme-switcher.js" defer></script>
   </head>
 
   <body>
-    <div class="hero" data-theme="dark">
-      <nav class="container-fluid">
-        <ul>
-          <li>
-            <a href="./" class="contrast"><strong>Home</strong></a>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <details role="list" dir="rtl">
-              <summary aria-haspopup="listbox" role="link" class="contrast">
-                Website Theme
-              </summary>
-              <ul role="listbox">
-                <li><a href="#" data-theme-switcher="auto">Auto</a></li>
-                <li><a href="#" data-theme-switcher="light">Light</a></li>
-                <li><a href="#" data-theme-switcher="dark">Dark</a></li>
-              </ul>
-            </details>
-          </li>
-          <li>
-            <details role="list" dir="rtl">
-              <summary aria-haspopup="listbox" role="link" class="contrast">
-                Past Side Projects
-              </summary>
-              <ul role="listbox">
-                <li>
-                  <a href="chess/index.html">Chess Game</a>
-                </li>
-                <li><a href="Dino Game/index.html">Dino Game</a></li>
-                <li><a href="Cube/index.html">Cube</a></li>
-                <li>
-                  <a href="Fizz/index.html">FizzBuzz Interview Question</a>
-                </li>
-              </ul>
-            </details>
-          </li>
-        </ul>
-      </nav>
-      <header class="container">
-        <hgroup>
-          <h1>Michael J O'Hare</h1>
-          <h2>Full Stack Developer</h2>
-        </hgroup>
-        <p>
-          <a href="Resume/Michael_O'Hare_Resume.pdf" role="button">Resume</a>
-        </p>
-      </header>
-    </div>
-
+    <hero-section></hero-section>
     <main class="container">
       <div class="grid">
         <section>
@@ -158,6 +111,5 @@
         </aside>
       </div>
     </main>
-    <script src="js/theme-switcher.js"></script>
   </body>
 </html>

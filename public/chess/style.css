@@ -14,6 +14,7 @@ hgroup > :last-child {
   background-image: url("../images/hero.png");
   background-position: center;
   background-size: cover;
+  padding-bottom: 10px;
 }
 
 header {
@@ -33,13 +34,6 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   color: var(--contrast-hover);
 }
 
-body {
-  margin: 0px;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
 #outer-container {
   display: flex;
   flex-direction: column;
@@ -49,6 +43,7 @@ body {
   max-width: 1150px;
   margin: auto;
   padding-top: 20px;
+  padding-left: 20px;
 }
 
 #game-container {
@@ -74,6 +69,8 @@ body {
 
 #chessSVG {
   pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
 
 .draggingDiv {
@@ -87,7 +84,6 @@ body {
   flex-grow: 1;
   height: 85vmin;
   max-width: 325px;
-  min-width: 225px;
   margin: 0px 20px 20px 20px;
   display: flex;
   flex-direction: column;
@@ -205,24 +201,29 @@ body {
   #outer-container,
   #game-container,
   #text-areas-container {
+    height: 100%;
     width: 100%;
     align-items: center;
     display: flex;
     flex-direction: column;
   }
 
+  #outer-container {
+    padding-left: 0;
+  }
+
   .chessboard-wrapper {
     margin-left: 0;
-    margin-top: 20px;
+    padding: 10px;
     order: 1;
   }
 
   #sidebar {
     order: 2;
     width: 70vmin;
+    height: fit-content;
     max-width: none;
     margin: 0;
-    margin-bottom: 20px;
   }
 
   #move-history {
@@ -236,8 +237,6 @@ body {
   }
 
   #text-areas-container {
-    order: 3;
-    margin-top: 20px;
-    align-self: center;
+    margin-top: 0;
   }
 }
