@@ -1,3 +1,38 @@
+:root {
+  --font-weight: 400;
+  --border-radius: 0;
+}
+
+h2,
+h3,
+hgroup > :last-child {
+  font-weight: 200;
+}
+
+.hero {
+  background-color: #394046;
+  background-image: url("../images/hero.png");
+  background-position: center;
+  background-size: cover;
+}
+
+header {
+  padding: var(--spacing-company) 0;
+}
+
+header hgroup > :last-child {
+  color: var(--h3-color);
+}
+
+header hgroup {
+  margin-bottom: var(--spacing-company);
+}
+
+summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
+  background-color: transparent;
+  color: var(--contrast-hover);
+}
+
 body {
   margin: 0px;
   display: flex;
@@ -13,16 +48,13 @@ body {
   width: 100%;
   max-width: 1150px;
   margin: auto;
+  padding-top: 20px;
 }
 
 #game-container {
   display: flex;
   justify-content: center;
   width: 100%;
-}
-
-.chessboard-wrapper {
-  margin-left: 20px;
 }
 
 #chessboard-container {
@@ -53,7 +85,7 @@ body {
 
 #sidebar {
   flex-grow: 1;
-  height: 70vmin;
+  height: 85vmin;
   max-width: 325px;
   min-width: 225px;
   margin: 0px 20px 20px 20px;
@@ -70,18 +102,14 @@ body {
   margin-bottom: 10px;
 }
 
-#submit-fen {
+#submit-fen,
+#import-from-fen {
   margin-bottom: 10px;
 }
 
 #navigation {
   display: flex;
   justify-content: space-between;
-}
-
-#flip-fen-import {
-  display: flex;
-  flex-direction: column;
 }
 
 #flip-board,
@@ -92,10 +120,6 @@ body {
 
 #flip-board {
   margin-bottom: 10px;
-}
-
-#reset-board {
-  margin-top: 10px;
 }
 
 #move-history {
@@ -134,7 +158,6 @@ body {
 #next-move {
   cursor: pointer;
   flex-grow: 1;
-  font-size: 20px;
 }
 
 #prev-move {
@@ -162,14 +185,18 @@ body {
 }
 
 #pgn-box {
-  height: 75px;
+  height: 65px;
 }
 
 #fen-box {
-  height: 35px;
+  height: 60px;
 }
 
 @media (max-width: 1010px) {
+  .hero {
+    width: 100%;
+  }
+
   body {
     flex-direction: column;
     align-items: center;
