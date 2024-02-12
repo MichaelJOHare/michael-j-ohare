@@ -103,11 +103,6 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   margin-bottom: 10px;
 }
 
-#navigation {
-  display: flex;
-  justify-content: space-between;
-}
-
 #flip-board,
 #import-from-fen,
 #reset-board {
@@ -150,10 +145,9 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   margin: 3px;
 }
 
-#prev-move,
-#next-move {
-  cursor: pointer;
-  flex-grow: 1;
+#navigation {
+  display: flex;
+  justify-content: space-between;
 }
 
 #prev-move {
@@ -162,6 +156,11 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
 
 #next-move {
   margin-left: 10px;
+}
+
+#next-move-icon,
+#prev-move-icon {
+  height: 5vmin;
 }
 
 #text-areas-container {

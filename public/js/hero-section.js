@@ -5,7 +5,7 @@ class HeroSection extends HTMLElement {
       <nav class="container-fluid">
         <ul>
           <li>
-            <a href="/public/" class="contrast"><strong>Home</strong></a>
+            <a href="/" class="contrast"><strong>Home</strong></a>
           </li>
         </ul>
         <ul>
@@ -28,12 +28,12 @@ class HeroSection extends HTMLElement {
               </summary>
               <ul role="listbox">
                 <li>
-                  <a href="./chess/">Chess Game</a>
+                  <a href="https://github.com/MichaelJOHare/chess-application2.0">Java Chess Application</a>
                 </li>
-                <li><a href="./Dino Game/">Dino Game</a></li>
-                <li><a href="./Cube/">Cube</a></li>
+                <li><a href="/Dino Game/">Dino Game</a></li>
+                <li><a href="/Cube/">Cube</a></li>
                 <li>
-                  <a href="./Fizz/">FizzBuzz Interview Question</a>
+                  <a href="/Fizz/">FizzBuzz Interview Question</a>
                 </li>
                 <li>
                   <a href="https://github.com/MichaelJOHare/number-guess-game"

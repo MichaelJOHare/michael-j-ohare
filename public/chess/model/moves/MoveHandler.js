@@ -27,7 +27,6 @@ class MoveHandler {
       this.selectedPiece === null ||
       this.selectedPiece.getPlayer() !== this.gs.getCurrentPlayer()
     ) {
-      console.log("invalid piece");
       return;
     }
 
@@ -40,7 +39,6 @@ class MoveHandler {
         this.gui.setHighlightedSquares(this.moves);
         this.gui.updateGUI();
       } else {
-        console.log("no legal move");
         return;
       }
       this.isFirstClick = false;
@@ -69,7 +67,6 @@ class MoveHandler {
     );
 
     if (!legalMove) {
-      console.log("illegal move");
       this.gui.setHighlightedSquares(this.moves);
       this.gui.updateGUI();
       return;
@@ -118,7 +115,6 @@ class MoveHandler {
       !legalMove ||
       this.selectedPiece.getPlayer() !== this.gs.getCurrentPlayer()
     ) {
-      console.log("illegal move");
       this.isFirstClick = true;
       this.selectedPiece = null;
       this.gui.updateGUI();

@@ -1,11 +1,13 @@
 import GameController from "./controller/GameController.js";
 
 const gameController = new GameController();
-console.log("GameController initialized", gameController);
 
 /*
 TO DO
- - Fix draggingDiv width/height in mobile
+ - Fix outer container width on mobile
+
+ - Fix draggingDiv width/height in mobile 
+        -after testing, might actually be ok - makes it easier to see piece being dragged
 
  - Refactor promotion selector, lots of repeated code
           -- Maybe redo chessboard highlighter to use SVG for highlighting like drawArrow/Circle
