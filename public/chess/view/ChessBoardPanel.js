@@ -191,6 +191,10 @@ class ChessBoardPanel {
   }
 
   clearKingCheckHighlightedSquare(square) {
+    if (!square) {
+      this.boardHighlighter.kingCheckHighlightedSquare = null;
+      return;
+    }
     const row = this.isBoardFlipped ? 7 - square.getRow() : square.getRow();
     const col = this.isBoardFlipped ? 7 - square.getCol() : square.getCol();
     this.boardHighlighter.redrawSquare(row, col);
@@ -244,12 +248,18 @@ class ChessBoardPanel {
     }
   }
 
+  cancelPromotionSelector(action) {
+    this.promotionSelector.removePromotionSelector();
+    this.guiController.handleCancelPromotion(action);
+  }
+
   onPreviousMoveButtonClick() {
+    this.cancelPromotionSelector("undo");
     this.guiController.handlePreviousMoveButtonClick();
-    this.clearHighlights();
   }
 
   onNextMoveButtonClick() {
+    this.cancelPromotionSelector("redo");
     this.guiController.handleNextMoveButtonClick();
   }
 
@@ -274,6 +284,7 @@ class ChessBoardPanel {
   }
 
   onResetBoardButtonClick() {
+    this.cancelPromotionSelector("reset");
     this.guiController.handleResetBoard();
   }
 

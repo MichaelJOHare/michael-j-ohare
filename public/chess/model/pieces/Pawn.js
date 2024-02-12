@@ -3,19 +3,14 @@ import PieceType from "../pieces/PieceType.js";
 import PawnMovementStrategy from "./movementstrategy/PawnMovementStrategy.js";
 
 class Pawn extends ChessPiece {
-  static WHITE_PAWN = "♙";
-  static BLACK_PAWN = "♟";
+  static PAWN_SYMBOL = "♙";
 
   constructor(currentSquare, player) {
     super(currentSquare, player, PieceType.PAWN, new PawnMovementStrategy());
   }
 
-  getWhiteChessPieceSymbol() {
-    return Pawn.WHITE_PAWN;
-  }
-
-  getBlackChessPieceSymbol() {
-    return Pawn.BLACK_PAWN;
+  getChessPieceSymbol() {
+    return Pawn.PAWN_SYMBOL;
   }
 }
 

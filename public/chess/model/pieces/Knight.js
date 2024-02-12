@@ -3,8 +3,7 @@ import ChessPiece from "./ChessPiece.js";
 import KnightMovementStrategy from "./movementstrategy/KnightMovementStrategy.js";
 
 class Knight extends ChessPiece {
-  static WHITE_KNIGHT = "♞";
-  static BLACK_KNIGHT = "♘";
+  static KNIGHT_SYMBOL = "♞";
 
   constructor(currentSquare, player) {
     super(
@@ -15,12 +14,8 @@ class Knight extends ChessPiece {
     );
   }
 
-  getWhiteChessPieceSymbol() {
-    return Knight.WHITE_KNIGHT;
-  }
-
-  getBlackChessPieceSymbol() {
-    return Knight.BLACK_KNIGHT;
+  getChessPieceSymbol() {
+    return Knight.KNIGHT_SYMBOL;
   }
 }
 

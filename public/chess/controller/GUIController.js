@@ -48,6 +48,15 @@ class GUIController {
 
   handlePawnPromotion(move, callback) {
     this.chessBoardPanel.showPromotionSelector(move, callback);
+    this.chessBoardPanel.drawBoard();
+  }
+
+  handleCancelPromotion(action) {
+    this.gameController.handleCancelPromotion(action);
+  }
+
+  hidePromotionSelector(action) {
+    this.chessBoardPanel.cancelPromotionSelector(action);
   }
 
   setHighlightedSquares(moves) {
@@ -66,10 +75,15 @@ class GUIController {
   clearHighlightedSquares() {
     this.chessBoardPanel.clearHighlights();
     this.chessBoardPanel.clearPreviousMoveHighlights();
+    this.chessBoardPanel.clearKingCheckHighlightedSquare(null);
   }
 
   clearKingCheckHighlightedSquare(square) {
     this.chessBoardPanel.clearKingCheckHighlightedSquare(square);
+  }
+
+  drawBoard() {
+    this.chessBoardPanel.drawBoard();
   }
 
   updateGUI() {

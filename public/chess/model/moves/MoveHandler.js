@@ -17,6 +17,7 @@ class MoveHandler {
     this.pm = pieceManager;
     this.isFirstClick = true;
     this.selectedPiece = null;
+    this.promotionResolver = null;
     this.moves = [];
   }
 
@@ -45,7 +46,7 @@ class MoveHandler {
     }
   }
 
-  handleMovePieceClick(row, col) {
+  async handleMovePieceClick(row, col) {
     if (!this.selectedPiece) {
       this.isFirstClick = true;
       return;
@@ -72,7 +73,7 @@ class MoveHandler {
       return;
     }
 
-    this.finalizeMove(legalMove);
+    await this.finalizeMove(legalMove);
     this.handleCheckAndCheckmate();
     this.gui.updateGUI();
   }
@@ -95,7 +96,7 @@ class MoveHandler {
       );
       if (this.moves.length > 0) {
         this.gui.setHighlightedSquares(this.moves);
-        this.gui.updateGUI();
+        this.gui.drawBoard();
         return;
       } else {
         this.gui.updateGUI();
@@ -105,7 +106,7 @@ class MoveHandler {
     return;
   }
 
-  handleDragDrop(endRow, endCol) {
+  async handleDragDrop(endRow, endCol) {
     const targetSquare = new Square(endRow, endCol);
     let legalMove = this.moves.find((m) =>
       m.getEndSquare().equals(targetSquare)
@@ -121,21 +122,35 @@ class MoveHandler {
       return;
     }
 
-    this.finalizeMove(legalMove);
+    await this.finalizeMove(legalMove);
     this.handleCheckAndCheckmate();
     this.gui.updateGUI();
   }
 
-  finalizeMove(legalMove) {
-    this.mementos.push(this.gs.createMemento());
-
-    if (legalMove.isPromotion && !this.gs.getCurrentPlayer().isStockfish()) {
-      this.gui.handlePawnPromotion(legalMove, (promotionType) => {
-        legalMove.setPromotionType(promotionType);
+  async finalizeMove(legalMove) {
+    try {
+      if (legalMove.isPromotion && !this.gs.getCurrentPlayer().isStockfish()) {
+        const result = await new Promise((resolve) => {
+          this.promotionResolver = resolve;
+          this.gui.handlePawnPromotion(legalMove, (promotionType) => {
+            if (promotionType) {
+              legalMove.setPromotionType(promotionType);
+              resolve("continue");
+            }
+          });
+        });
+        if (result === "continue") {
+          this.mementos.push(this.gs.createMemento());
+          this.continueFinalizingMove(legalMove);
+        }
+      } else {
+        this.mementos.push(this.gs.createMemento());
         this.continueFinalizingMove(legalMove);
-      });
-    } else {
-      this.continueFinalizingMove(legalMove);
+      }
+    } catch (error) {
+      console.error("An error occurred during move finalization:", error);
+    } finally {
+      this.promotionResolver = null;
     }
   }
 
@@ -146,6 +161,13 @@ class MoveHandler {
     this.isFirstClick = true;
     this.gs.swapPlayers();
     this.gui.setHighlightedSquaresPreviousMove(legalMove);
+  }
+
+  cancelPromotion(action) {
+    if (this.promotionResolver) {
+      this.promotionResolver(action);
+      this.promotionResolver = null;
+    }
   }
 
   handleCheckAndCheckmate() {
@@ -180,7 +202,10 @@ class MoveHandler {
       )
     ) {
       this.gs.setGameOver(true);
-      // this.gui.checkmateLogText();
+      this.gui.setKingCheckHighlightedSquare(
+        this.pm.findKingSquare(this.gs.getCurrentPlayer())
+      );
+      this.move.getLastMove().checkState = "checkmate";
     } else if (
       !hasLegalMoves ||
       (playerPieces.length === 1 && opponentPieces.length === 1)
@@ -197,6 +222,7 @@ class MoveHandler {
       this.gui.setKingCheckHighlightedSquare(
         this.pm.findKingSquare(this.gs.getCurrentPlayer())
       );
+      this.move.getLastMove().checkState = "check";
     } else {
       this.gui.clearKingCheckHighlightedSquare(
         this.pm.findKingSquare(this.gs.getOpposingPlayer())

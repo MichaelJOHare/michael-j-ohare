@@ -120,7 +120,9 @@ class EventHandlers {
         this.dragInitiated = true;
       }
     } else if (event.buttons === 2) {
-      // draw arrow (maybe snap to possible legal squares? knight move, diagonals, sliders)
+      // if diff of x,y captured in onMouseDown and x,y onMouseMove > DRAG_DELTA ->
+      //  draw arrow (maybe snap to possible legal squares? knight move, diagonals, sliders), else draw circle
+      //      similar to dragInitiated/isDragging
     }
   }
 
@@ -145,8 +147,7 @@ class EventHandlers {
       this.isDragging = false;
       this.dragInitiated = false;
     } else if (event.button === 2) {
-      // if diff of x,y captured in onMouseDown and x,y onMouseUp > DRAG_DELTA -> draw arrow, else draw circle
-      //      similar to dragInitiated/isDragging
+      // finish drawing arrow/circle
     }
   }
 

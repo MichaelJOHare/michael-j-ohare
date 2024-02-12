@@ -43,18 +43,24 @@
             </svg>
           </div>
           <div id="text-areas-container">
-            <textarea id="fen-box" placeholder="FEN"></textarea>
-            <textarea id="pgn-box" placeholder="PGN"></textarea>
+            <div id="fen-title-box">
+              <h5 id="fen-title">FEN</h5>
+              <textarea id="fen-box" placeholder="FEN"></textarea>
+            </div>
+            <div id="pgn-title-box">
+              <h5 id="pgn-title">PGN</h5>
+              <textarea id="pgn-box" placeholder="PGN"></textarea>
+            </div>
           </div>
         </div>
         <div id="sidebar">
           <div id="move-history-title"><h4>Move History</h4></div>
           <div id="move-history"></div>
           <div id="navigation">
-            <button id="prev-move">
+            <button id="prev-move" title="Previous Move">
               <img id="prev-move-icon" src="./images/prev-move-arrow.svg" />
             </button>
-            <button id="next-move">
+            <button id="next-move" title="Next Move">
               <img id="next-move-icon" src="./images/next-move-arrow.svg" />
             </button>
           </div>

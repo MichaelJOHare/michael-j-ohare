@@ -4,19 +4,14 @@ import RookMovementStrategy from "./movementstrategy/RookMovementStrategy.js";
 import PieceWithMoveStatus from "./PieceWithMoveStatus.js";
 
 class Rook extends PieceWithMoveStatus(ChessPiece) {
-  static WHITE_ROOK = "♜";
-  static BLACK_ROOK = "♖";
+  static ROOK_SYMBOL = "♜";
 
   constructor(currentSquare, player) {
     super(currentSquare, player, PieceType.ROOK, new RookMovementStrategy());
   }
 
-  getWhiteChessPieceSymbol() {
-    return Rook.WHITE_ROOK;
-  }
-
-  getBlackChessPieceSymbol() {
-    return Rook.BLACK_ROOK;
+  getChessPieceSymbol() {
+    return Rook.ROOK_SYMBOL;
   }
 }
 

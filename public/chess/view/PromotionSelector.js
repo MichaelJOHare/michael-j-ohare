@@ -8,6 +8,7 @@ class PromotionSelector {
     this.squareSize = 0;
 
     this.activePromotionSelector = null;
+    this.boardOverlay = null;
   }
 
   createPromotionSelector(move, callback, squareSize) {
@@ -70,6 +71,14 @@ class PromotionSelector {
     selector.style.margin = "0";
     selector.style.lineHeight = "0";
     selector.style.boxSizing = "border-box";
+    selector.addEventListener("click", (event) => {
+      const clickedElement = event.target;
+      const pieceType = clickedElement.getAttribute("data-piece-type");
+      if (pieceType) {
+        callback(pieceType);
+        this.removePromotionSelector();
+      }
+    });
 
     // Shade the entire chessboard
     const boardOverlay = document.createElement("div");
@@ -81,6 +90,7 @@ class PromotionSelector {
     boardOverlay.style.height = "100%";
     boardOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
     boardOverlay.style.zIndex = "2";
+    this.boardOverlay = boardOverlay;
     this.boardContainer.appendChild(boardOverlay);
 
     promotionPieces.forEach((type) => {
@@ -94,11 +104,7 @@ class PromotionSelector {
         img.style.padding = "0";
         img.style.margin = "0";
         img.style.display = "block";
-        img.addEventListener("click", () => {
-          callback(type.toUpperCase());
-          boardOverlay.remove();
-          this.removePromotionSelector();
-        });
+        img.setAttribute("data-piece-type", type.toUpperCase());
         selector.appendChild(img);
       }
     });
@@ -186,9 +192,14 @@ class PromotionSelector {
     if (this.activePromotionSelector) {
       this.activePromotionSelector.selector.remove();
       this.activePromotionSelector = null;
-
-      this.drawBoard();
     }
+
+    if (this.boardOverlay) {
+      this.boardOverlay.remove();
+      this.boardOverlay = null;
+    }
+
+    this.drawBoard();
   }
 
   updateSquareSize(squareSize) {

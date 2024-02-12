@@ -115,6 +115,10 @@ class GameController {
     this.mh.handleSingleRedo();
   }
 
+  handleCancelPromotion(action) {
+    this.mh.cancelPromotion(action);
+  }
+
   generateCurrentFEN() {
     return FENGenerator.toFEN(this.board, this.move, this.gs);
   }

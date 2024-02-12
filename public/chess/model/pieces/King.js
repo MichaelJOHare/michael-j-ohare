@@ -4,19 +4,14 @@ import KingMovementStrategy from "./movementstrategy/KingMovementStrategy.js";
 import PieceWithMoveStatus from "./PieceWithMoveStatus.js";
 
 class King extends PieceWithMoveStatus(ChessPiece) {
-  static WHITE_KING = "♚";
-  static BLACK_KING = "♔";
+  static KING_SYMBOL = "♚";
 
   constructor(currentSquare, player) {
     super(currentSquare, player, PieceType.KING, new KingMovementStrategy());
   }
 
-  getWhiteChessPieceSymbol() {
-    return King.WHITE_KING;
-  }
-
-  getBlackChessPieceSymbol() {
-    return King.BLACK_KING;
+  getChessPieceSymbol() {
+    return King.KING_SYMBOL;
   }
 }
 

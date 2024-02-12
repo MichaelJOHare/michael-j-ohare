@@ -3,19 +3,14 @@ import PieceType from "../pieces/PieceType.js";
 import QueenMovementStrategy from "./movementstrategy/QueenMovementStrategy.js";
 
 class Queen extends ChessPiece {
-  static WHITE_QUEEN = "♛";
-  static BLACK_QUEEN = "♕";
+  static QUEEN_SYMBOL = "♛";
 
   constructor(currentSquare, player) {
     super(currentSquare, player, PieceType.QUEEN, new QueenMovementStrategy());
   }
 
-  getWhiteChessPieceSymbol() {
-    return Queen.WHITE_QUEEN;
-  }
-
-  getBlackChessPieceSymbol() {
-    return Queen.BLACK_QUEEN;
+  getChessPieceSymbol() {
+    return Queen.QUEEN_SYMBOL;
   }
 }
 

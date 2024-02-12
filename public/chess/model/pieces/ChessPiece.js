@@ -13,16 +13,8 @@ class ChessPiece {
     this.#isAlive = true;
   }
 
-  getWhiteChessPieceSymbol() {
-    throw new Error(
-      "getWhiteChessPieceSymbol must be implemented by subclasses"
-    );
-  }
-
-  getBlackChessPieceSymbol() {
-    throw new Error(
-      "getBlackChessPieceSymbol must be implemented by subclasses"
-    );
+  getChessPieceSymbol() {
+    throw new Error("getChessPieceSymbol must be implemented by subclasses");
   }
 
   calculateLegalMoves(board, move) {

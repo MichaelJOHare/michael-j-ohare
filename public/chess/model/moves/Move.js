@@ -7,6 +7,7 @@ class Move {
     this.board = board;
     this.isPromotion = false;
     this.isCapture = false;
+    this.checkState = "none";
   }
 
   execute() {

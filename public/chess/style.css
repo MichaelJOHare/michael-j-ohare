@@ -127,15 +127,28 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   align-items: flex-start;
   align-content: flex-start;
   height: 100%;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   margin-bottom: 10px;
   overflow-y: auto;
 }
 
-.current-move-highlight {
-  background: #2c5070;
-  color: #e3e3e3;
+html[data-theme="light"] .current-move-highlight {
+  background: #5eadf1;
+  color: #fcfcfc;
   outline: 1px solid #306698;
+}
+
+html[data-theme="light"] .current-move-highlight .white-piece {
+  color: white;
+}
+
+html[data-theme="dark"] .current-move-highlight {
+  background: #2c5070;
+  outline: 1px solid #306698;
+}
+
+html[data-theme="dark"] .current-move-highlight .black-piece {
+  color: #212121;
 }
 
 #move-history-title {
@@ -151,6 +164,22 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
 .move-history-entry {
   cursor: pointer;
   margin: 3px;
+}
+
+html[data-theme="light"] .white-piece {
+  color: #cdcdcd;
+}
+
+html[data-theme="light"] .black-piece {
+  color: #303030;
+}
+
+html[data-theme="dark"] .white-piece {
+  color: #e4e4e4;
+}
+
+html[data-theme="dark"] .black-piece {
+  color: #434343;
 }
 
 #navigation {
@@ -180,19 +209,26 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   align-items: center;
 }
 
+#fen-title-box,
+#pgn-title-box {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+#fen-title,
+#pgn-title {
+  flex: 0 0 45px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
 #pgn-box,
 #fen-box {
-  width: 100%;
+  flex: 1;
+  height: 65px;
   margin-bottom: 10px;
   resize: vertical;
-}
-
-#pgn-box {
-  height: 65px;
-}
-
-#fen-box {
-  height: 65px;
 }
 
 @media (max-width: 1010px) {

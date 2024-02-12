@@ -3,8 +3,7 @@ import PieceType from "../pieces/PieceType.js";
 import BishopMovementStrategy from "./movementstrategy/BishopMovementStrategy.js";
 
 class Bishop extends ChessPiece {
-  static WHITE_BISHOP = "♝";
-  static BLACK_BISHOP = "♗";
+  static BISHOP_SYMBOL = "♝";
 
   constructor(currentSquare, player) {
     super(
@@ -15,12 +14,8 @@ class Bishop extends ChessPiece {
     );
   }
 
-  getWhiteChessPieceSymbol() {
-    return Bishop.WHITE_BISHOP;
-  }
-
-  getBlackChessPieceSymbol() {
-    return Bishop.BLACK_BISHOP;
+  getChessPieceSymbol() {
+    return Bishop.BISHOP_SYMBOL;
   }
 }
 
