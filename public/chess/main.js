@@ -4,7 +4,7 @@ const gameController = new GameController();
 
 /*
 TO DO
- - Fix outer container width on mobile
+ - Fix chessboard-wrapper width on mobile
 
  - Fix draggingDiv width/height in mobile 
         -after testing, might actually be ok - makes it easier to see piece being dragged

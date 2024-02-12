@@ -72,6 +72,10 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   height: 100%;
 }
 
+.promotion-selector {
+  cursor: pointer;
+}
+
 .draggingDiv {
   user-select: none;
   -moz-user-select: none;
@@ -101,6 +105,10 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
 #submit-fen,
 #import-from-fen {
   margin-bottom: 10px;
+}
+
+#submit-fen {
+  background: #21724a;
 }
 
 #flip-board,
@@ -160,7 +168,7 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
 
 #next-move-icon,
 #prev-move-icon {
-  height: 5vmin;
+  height: 4vmin;
 }
 
 #text-areas-container {
@@ -184,7 +192,7 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
 }
 
 #fen-box {
-  height: 60px;
+  height: 65px;
 }
 
 @media (max-width: 1010px) {
