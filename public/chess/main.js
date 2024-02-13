@@ -6,8 +6,7 @@ const gameController = new GameController();
 TO DO
  - Fix chessboard-wrapper width on mobile
 
- - Fix draggingDiv width/height in mobile 
-        -after testing, might actually be ok - makes it easier to see piece being dragged
+ - Make drawing arrow/circle over pre-existing arrow/circle remove it.
 
  - Refactor promotion selector, lots of repeated code
           -- Maybe redo chessboard highlighter to use SVG for highlighting like drawArrow/Circle

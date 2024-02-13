@@ -8,6 +8,7 @@ class ChessBoardHighlighter {
     this.offscreenCanvas = offscreenCanvas;
     this.offscreenCtx = offscreenCtx;
     this.svg = document.getElementById("chessSVG");
+    this.tempArrow = null;
     this.imageLoader = imageLoader;
 
     this.isBoardFlipped = false;
@@ -17,6 +18,7 @@ class ChessBoardHighlighter {
     this.highlightedSquares = [];
     this.previousMove = null;
     this.previousMoveHighlightedSquares = [];
+    this.persistentElements = [];
   }
 
   drawRankFileLabels(row, col) {
@@ -297,38 +299,134 @@ class ChessBoardHighlighter {
     }
   }
 
-  drawCircle(x, y) {
+  drawCircle({ row, col }) {
     const ns = "http://www.w3.org/2000/svg";
     let circle = document.createElementNS(ns, "circle");
+
+    if (this.isBoardFlipped) {
+      row = 7 - row;
+      col = 7 - col;
+    }
+    const x = (col + 0.5) * this.squareSize;
+    const y = (row + 0.5) * this.squareSize;
+    const lineWidth = this.squareSize / 14;
+
     circle.setAttribute("cx", x);
     circle.setAttribute("cy", y);
-    circle.setAttribute("r", this.squareSize / 4);
+    circle.setAttribute("r", this.squareSize / 2.5);
     circle.setAttribute("fill", "none");
     circle.setAttribute("stroke", "green");
-    circle.setAttribute("stroke-width", 2);
+    circle.setAttribute("stroke-width", lineWidth);
+    circle.setAttribute("opacity", 0.7);
+
     this.svg.appendChild(circle);
   }
 
-  drawArrow(x1, y1, x2, y2) {
+  createArrowComponents(originalSquare, currentSquare) {
     const ns = "http://www.w3.org/2000/svg";
-    let arrow = document.createElementNS(ns, "line");
-    arrow.setAttribute("x1", x1);
-    arrow.setAttribute("y1", y1);
-    arrow.setAttribute("x2", x2);
-    arrow.setAttribute("y2", y2);
-    arrow.setAttribute("stroke", "blue");
-    arrow.setAttribute("stroke-width", 4);
-    arrow.setAttribute("marker-end", "url(#arrowhead)");
-    this.svg.appendChild(arrow);
+    const headLength = this.squareSize / 2;
+    const lineWidth = this.squareSize / 8;
+    const opacity = 0.7;
+    let visualOriginalRow = originalSquare.row;
+    let visualOriginalCol = originalSquare.col;
+    let visualCurrentRow = currentSquare.row;
+    let visualCurrentCol = currentSquare.col;
+
+    if (this.isBoardFlipped) {
+      visualOriginalRow = 7 - originalSquare.row;
+      visualOriginalCol = 7 - originalSquare.col;
+      visualCurrentRow = 7 - currentSquare.row;
+      visualCurrentCol = 7 - currentSquare.col;
+    }
+    const x1 = (visualOriginalCol + 0.5) * this.squareSize;
+    const y1 = (visualOriginalRow + 0.5) * this.squareSize;
+    const x2 = (visualCurrentCol + 0.5) * this.squareSize;
+    const y2 = (visualCurrentRow + 0.5) * this.squareSize;
+
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const adjustedX2 = x2 - headLength * Math.cos(angle) * 0.85;
+    const adjustedY2 = y2 - headLength * Math.sin(angle) * 0.85;
+
+    let line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", adjustedX2);
+    line.setAttribute("y2", adjustedY2);
+    line.setAttribute("stroke", "green");
+    line.setAttribute("stroke-width", lineWidth);
+    line.setAttribute("opacity", opacity);
+
+    const arrowPointX = x2 - headLength * Math.cos(angle - Math.PI / 6);
+    const arrowPointY = y2 - headLength * Math.sin(angle - Math.PI / 6);
+    const arrowPointX2 = x2 - headLength * Math.cos(angle + Math.PI / 6);
+    const arrowPointY2 = y2 - headLength * Math.sin(angle + Math.PI / 6);
+
+    let polygon = document.createElementNS(ns, "polygon");
+    const points = `${x2},${y2} ${arrowPointX},${arrowPointY} ${arrowPointX2},${arrowPointY2}`;
+    polygon.setAttribute("points", points);
+    polygon.setAttribute("fill", "green");
+    polygon.setAttribute("opacity", opacity);
+
+    return { line, polygon };
+  }
+
+  drawArrow(originalSquare, endSquare) {
+    const components = this.createArrowComponents(
+      originalSquare,
+      endSquare,
+      false
+    );
+    this.svg.appendChild(components.line);
+    this.svg.appendChild(components.polygon);
+  }
+
+  drawTemporaryArrow(originalSquare, currentSquare) {
+    this.clearTempArrow();
+
+    const tempGroup = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "g"
+    );
+    tempGroup.setAttribute("class", "tempArrow");
+    const components = this.createArrowComponents(
+      originalSquare,
+      currentSquare,
+      true
+    );
+
+    tempGroup.appendChild(components.line);
+    tempGroup.appendChild(components.polygon);
+    this.svg.appendChild(tempGroup);
+  }
+
+  addCircle(square) {
+    this.persistentElements.push({ type: "circle", square: square });
+    this.drawCircle(square);
+  }
+
+  addArrow(startSquare, endSquare) {
+    this.persistentElements.push({
+      type: "arrow",
+      startSquare: startSquare,
+      endSquare: endSquare,
+    });
+    this.drawArrow(startSquare, endSquare);
+  }
+
+  clearTempArrow() {
+    const tempArrows = this.svg.querySelectorAll(".tempArrow");
+    tempArrows.forEach((arrow) => arrow.remove());
   }
 
   clearSVG() {
     while (this.svg.firstChild) {
       this.svg.removeChild(this.svg.firstChild);
     }
+    this.persistentElements = [];
   }
 
   clearHighlights() {
+    this.clearSVG();
     this.highlightedSquares.forEach((square) => {
       this.redrawSquare(square.row, square.col);
     });
@@ -373,6 +471,19 @@ class ChessBoardHighlighter {
         row * this.squareSize
       );
     }
+  }
+
+  updatePersistentElements() {
+    while (this.svg.firstChild) {
+      this.svg.removeChild(this.svg.firstChild);
+    }
+    this.persistentElements.forEach((element) => {
+      if (element.type === "circle") {
+        this.drawCircle(element.square);
+      } else if (element.type === "arrow") {
+        this.drawArrow(element.startSquare, element.endSquare);
+      }
+    });
   }
 
   updateSquareSize(squareSize) {

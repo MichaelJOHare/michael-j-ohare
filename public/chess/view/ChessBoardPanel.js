@@ -240,6 +240,7 @@ class ChessBoardPanel {
     this.updateSquareSize();
     this.reorderSidebarBasedOnScreenWidth();
     this.updatePromotionSelector();
+    this.boardHighlighter.updatePersistentElements();
   }
 
   updatePromotionSelector() {
@@ -314,6 +315,7 @@ class ChessBoardPanel {
     this.eventHandlers.isBoardFlipped = this.isBoardFlipped;
     this.promotionSelector.isBoardFlipped = this.isBoardFlipped;
     this.promotionSelector.flipPromotionSelector();
+    this.boardHighlighter.updatePersistentElements();
     this.drawBoard();
   }
 

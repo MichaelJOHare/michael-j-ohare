@@ -26,6 +26,9 @@ class EventHandlers {
     this.squareSize = 0;
     this.dragInitiated = false;
     this.isDragging = false;
+    this.isDrawing = false;
+    this.readyToDrawCircle = false;
+    this.lastTargetSquare = null;
     this.originalSquare = null;
     this.draggingPiece = null;
     this.startX = 0;
@@ -75,7 +78,15 @@ class EventHandlers {
         this.dragInitiated = false;
       }
     } else if (event.button === 2) {
-      // set start point for drawing circle/arrow
+      this.startX = event.clientX;
+      this.startY = event.clientY;
+
+      const { row, col } = this.getSquareFromCoordinates(
+        this.startX,
+        this.startY
+      );
+      this.originalSquare = { row, col };
+      this.isDrawing = true;
     }
   }
 
@@ -119,10 +130,36 @@ class EventHandlers {
         );
         this.dragInitiated = true;
       }
-    } else if (event.buttons === 2) {
-      // if diff of x,y captured in onMouseDown and x,y onMouseMove > DRAG_DELTA ->
-      //  draw arrow (maybe snap to possible legal squares? knight move, diagonals, sliders), else draw circle
-      //      similar to dragInitiated/isDragging
+    } else if (event.buttons === 2 && this.isDrawing) {
+      const { row, col } = this.getSquareFromCoordinates(
+        event.clientX,
+        event.clientY
+      );
+      const currentSquare = { row, col };
+
+      if (
+        !this.lastTargetSquare ||
+        this.lastTargetSquare.row !== row ||
+        this.lastTargetSquare.col !== col
+      ) {
+        this.lastTargetSquare = { row, col };
+        const distance = Math.sqrt(
+          Math.pow(event.clientX - this.startX, 2) +
+            Math.pow(event.clientY - this.startY, 2)
+        );
+
+        // If right click drag inside original square -> draw circle
+        const drawThreshold = this.squareSize / 2;
+        if (distance < drawThreshold) {
+          this.readyToDrawCircle = true;
+        } else {
+          this.readyToDrawCircle = false;
+          this.boardHighlighter.drawTemporaryArrow(
+            this.originalSquare,
+            currentSquare
+          );
+        }
+      }
     }
   }
 
@@ -147,7 +184,28 @@ class EventHandlers {
       this.isDragging = false;
       this.dragInitiated = false;
     } else if (event.button === 2) {
-      // finish drawing arrow/circle
+      const { row, col } = this.getSquareFromCoordinates(
+        event.clientX,
+        event.clientY
+      );
+      const endCoords = { x: event.clientX, y: event.clientY };
+      const startCoords = { x: this.startX, y: this.startY };
+      const distance = Math.sqrt(
+        Math.pow(endCoords.x - startCoords.x, 2) +
+          Math.pow(endCoords.y - startCoords.y, 2)
+      );
+
+      if (distance < this.squareSize / 2) {
+        this.boardHighlighter.addCircle(this.originalSquare);
+      } else {
+        if (!this.readyToDrawCircle) {
+          this.boardHighlighter.addArrow(this.originalSquare, { row, col });
+        }
+      }
+
+      this.isDrawing = false;
+      this.readyToDrawCircle = false;
+      this.lastTargetSquare = null;
     }
   }
 
