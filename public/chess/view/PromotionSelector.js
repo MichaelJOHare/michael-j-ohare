@@ -13,15 +13,9 @@ class PromotionSelector {
 
   createPromotionSelector(move, callback, squareSize) {
     let promotionPieces = ["Queen", "Rook", "Bishop", "Knight"];
-    const pawnPosition = move.getEndSquare();
-    const pawnRow = pawnPosition.getRow();
-    const pawnCol = pawnPosition.getCol();
-    const visualRow = this.isBoardFlipped ? 7 - pawnRow : pawnRow;
-    const visualCol = this.isBoardFlipped ? 7 - pawnCol : pawnCol;
     const color = move.piece.getPlayer().getColor().toLowerCase();
     const colorCapitalized = color.charAt(0).toUpperCase() + color.slice(1);
     const selector = document.createElement("div");
-    const selectorHeight = this.squareSize * promotionPieces.length;
     selector.className = "promotion-selector";
     selector.style.position = "absolute";
 
@@ -36,41 +30,17 @@ class PromotionSelector {
       ),
     };
 
-    if (this.isBoardFlipped && color === "white") {
-      promotionPieces = promotionPieces.reverse();
-      this.isReversed = !this.isReversed;
+    if (this.reversePromotionPiecesIfNeeded(color)) {
+      promotionPieces.reverse();
     }
 
-    if (!this.isBoardFlipped && color === "black") {
-      promotionPieces = promotionPieces.reverse();
-    }
-
-    if (this.isBoardFlipped) {
-      if (visualRow === 7) {
-        selector.style.top = `${
-          (visualRow + 1) * this.squareSize - selectorHeight
-        }px`;
-      } else {
-        selector.style.top = `${visualRow * this.squareSize}px`;
-      }
-    } else {
-      if (visualRow === 0) {
-        selector.style.top = `${visualRow * this.squareSize}px`;
-      } else {
-        selector.style.top = `${
-          (visualRow + 1) * this.squareSize - selectorHeight
-        }px`;
-      }
-    }
-
-    selector.style.left = `${visualCol * squareSize}px`;
-    selector.style.width = `${squareSize}px`;
-    selector.style.height = `${squareSize * promotionPieces.length}px`;
+    this.setSelectorPositionAndSize(selector, move, this.squareSize);
     selector.style.zIndex = "3";
     selector.style.padding = "0";
     selector.style.margin = "0";
     selector.style.lineHeight = "0";
     selector.style.boxSizing = "border-box";
+
     selector.addEventListener("click", (event) => {
       const clickedElement = event.target;
       const pieceType = clickedElement.getAttribute("data-piece-type");
@@ -112,36 +82,9 @@ class PromotionSelector {
     this.boardContainer.appendChild(selector);
   }
 
-  setPositionAndSizeOfSelector() {
+  updateSelectorPositionAndSize() {
     const { selector, move } = this.activePromotionSelector;
-    const pawnPosition = move.getEndSquare();
-    const pawnRow = pawnPosition.getRow();
-    const pawnCol = pawnPosition.getCol();
-    const visualRow = this.isBoardFlipped ? 7 - pawnRow : pawnRow;
-    const visualCol = this.isBoardFlipped ? 7 - pawnCol : pawnCol;
-    const selectorHeight = this.squareSize * 4;
-
-    if (this.isBoardFlipped) {
-      if (visualRow === 7) {
-        selector.style.top = `${
-          (visualRow + 1) * this.squareSize - selectorHeight
-        }px`;
-      } else {
-        selector.style.top = `${visualRow * this.squareSize}px`;
-      }
-    } else {
-      if (visualRow === 0) {
-        selector.style.top = `${visualRow * this.squareSize}px`;
-      } else {
-        selector.style.top = `${
-          (visualRow + 1) * this.squareSize - selectorHeight
-        }px`;
-      }
-    }
-
-    selector.style.left = `${visualCol * this.squareSize}px`;
-    selector.style.width = `${this.squareSize}px`;
-    selector.style.height = `${selectorHeight}px`;
+    this.setSelectorPositionAndSize(selector, move, this.squareSize);
 
     Array.from(selector.children).forEach((img) => {
       img.style.height = `${this.squareSize}px`;
@@ -150,20 +93,22 @@ class PromotionSelector {
 
   updatePromotionSelector() {
     if (this.activePromotionSelector) {
-      this.setPositionAndSizeOfSelector();
+      this.updateSelectorPositionAndSize();
     }
   }
 
   flipPromotionSelector() {
     if (this.activePromotionSelector) {
-      this.setPositionAndSizeOfSelector();
+      this.updateSelectorPositionAndSize();
+
       const { selector, move } = this.activePromotionSelector;
       const color = move.piece.getPlayer().getColor().toLowerCase();
-      const shouldReverse =
-        (this.isBoardFlipped && color === "white" && !this.isReversed) ||
-        (!this.isBoardFlipped && color === "black" && this.isReversed) ||
-        (!this.isBoardFlipped && color === "white" && this.isReversed) ||
-        (this.isBoardFlipped && color === "black" && !this.isReversed);
+
+      // If playing as white and board is flipped, there's a mismatch
+      const colorBoardOrientationMismatch =
+        (color === "white") === this.isBoardFlipped;
+      // If mismatch is true and promotion selector is not reversed, should reverse selector
+      const shouldReverse = colorBoardOrientationMismatch !== this.isReversed;
 
       if (shouldReverse) {
         const childrenArray = Array.from(selector.children);
@@ -171,6 +116,47 @@ class PromotionSelector {
         this.isReversed = !this.isReversed;
       }
     }
+  }
+
+  setSelectorPositionAndSize(selector, move, squareSize) {
+    const pawnPosition = move.getEndSquare();
+    const pawnRow = pawnPosition.getRow();
+    const pawnCol = pawnPosition.getCol();
+    const { visualRow, visualCol } = this.calculateSelectorPosition(
+      pawnRow,
+      pawnCol
+    );
+    const selectorHeight = squareSize * 4;
+
+    selector.style.top = `${
+      this.isBoardFlipped
+        ? visualRow === 7
+          ? (visualRow + 1) * squareSize - selectorHeight
+          : visualRow * squareSize
+        : visualRow === 0
+        ? visualRow * squareSize
+        : (visualRow + 1) * squareSize - selectorHeight
+    }px`;
+    selector.style.left = `${visualCol * squareSize}px`;
+    selector.style.width = `${squareSize}px`;
+    selector.style.height = `${selectorHeight}px`;
+  }
+
+  reversePromotionPiecesIfNeeded(color) {
+    const shouldReverse =
+      (this.isBoardFlipped && color === "white") ||
+      (!this.isBoardFlipped && color === "black");
+    if (shouldReverse) {
+      this.isReversed = !this.isReversed;
+      return true;
+    }
+    return false;
+  }
+
+  calculateSelectorPosition(pawnRow, pawnCol) {
+    const visualRow = this.isBoardFlipped ? 7 - pawnRow : pawnRow;
+    const visualCol = this.isBoardFlipped ? 7 - pawnCol : pawnCol;
+    return { visualRow, visualCol };
   }
 
   calculateSelectorSquares(endSquare, color) {
@@ -189,16 +175,10 @@ class PromotionSelector {
   }
 
   removePromotionSelector() {
-    if (this.activePromotionSelector) {
-      this.activePromotionSelector.selector.remove();
-      this.activePromotionSelector = null;
-    }
-
-    if (this.boardOverlay) {
-      this.boardOverlay.remove();
-      this.boardOverlay = null;
-    }
-
+    this.activePromotionSelector?.selector.remove();
+    this.activePromotionSelector = null;
+    this.boardOverlay?.remove();
+    this.boardOverlay = null;
     this.drawBoard();
   }
 

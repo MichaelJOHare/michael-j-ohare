@@ -80,17 +80,14 @@ class GameController {
     if (this.mh.isFirstClick) {
       this.mh.handleSelectPieceClick(row, col);
     } else {
+      //maybe return true if legal move -> request analysis so unneccessary calls are limited
       this.mh.handleMovePieceClick(row, col);
-      if (this.sfController.isAnalysisEnabled) {
-        this.sfController.toggleContinuousAnalysis(true);
-      }
+      this.requestStockfishAnalysis();
     }
 
     if (this.gs.getCurrentPlayer().isStockfish()) {
       this.makeStockfishMove();
-      if (this.sfController.isAnalysisEnabled) {
-        this.sfController.toggleContinuousAnalysis(true);
-      }
+      this.requestStockfishAnalysis();
     }
 
     if (this.gs.isGameOver) {
@@ -107,14 +104,14 @@ class GameController {
   }
 
   handleDragDrop(endRow, endCol) {
+    //maybe return true if legal move -> request analysis so unneccessary calls are limited
     this.mh.handleDragDrop(endRow, endCol);
 
     if (this.gs.getCurrentPlayer().isStockfish()) {
       this.makeStockfishMove();
     }
-    if (this.sfController.isAnalysisEnabled) {
-      this.sfController.toggleContinuousAnalysis(true);
-    }
+
+    this.requestStockfishAnalysis();
 
     if (this.gs.isGameOver) {
       this.sfController.cleanUp();
@@ -123,9 +120,7 @@ class GameController {
 
   handlePreviousMoveButtonClick() {
     this.mh.handleUndoMove();
-    if (this.sfController.isAnalysisEnabled) {
-      this.sfController.toggleContinuousAnalysis(true);
-    }
+    this.requestStockfishAnalysis();
   }
 
   handleSingleUndo() {
@@ -163,6 +158,12 @@ class GameController {
     this.sfController.makeMove();
   }
   */
+
+  requestStockfishAnalysis() {
+    if (this.sfController.isAnalysisEnabled) {
+      this.sfController.requestAnalysisIfNeeded();
+    }
+  }
 
   handleResetBoard() {
     this.guiController.clearHighlightedSquares();

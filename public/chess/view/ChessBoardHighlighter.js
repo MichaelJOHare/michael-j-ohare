@@ -19,6 +19,7 @@ class ChessBoardHighlighter {
     this.previousMove = null;
     this.previousMoveHighlightedSquares = [];
     this.persistentElements = [];
+    this.persistentBestMoveArrowElement = [];
   }
 
   drawRankFileLabels(row, col) {
@@ -64,18 +65,10 @@ class ChessBoardHighlighter {
       const startSquare = move.getStartSquare();
       const endSquare = move.getEndSquare();
 
-      const startRow = this.isBoardFlipped
-        ? 7 - startSquare.getRow()
-        : startSquare.getRow();
-      const startCol = this.isBoardFlipped
-        ? 7 - startSquare.getCol()
-        : startSquare.getCol();
-      const endRow = this.isBoardFlipped
-        ? 7 - endSquare.getRow()
-        : endSquare.getRow();
-      const endCol = this.isBoardFlipped
-        ? 7 - endSquare.getCol()
-        : endSquare.getCol();
+      const startRow = this.getFlippedCoordinate(startSquare.getRow());
+      const startCol = this.getFlippedCoordinate(startSquare.getCol());
+      const endRow = this.getFlippedCoordinate(endSquare.getRow());
+      const endCol = this.getFlippedCoordinate(endSquare.getCol());
 
       this.highlightedSquares.push({ row: startRow, col: startCol });
       this.clearSquareOnOffscreenCanvas(startRow, startCol);
@@ -121,8 +114,8 @@ class ChessBoardHighlighter {
 
     const squares = [move.getStartSquare(), move.getEndSquare()];
     squares.forEach((square) => {
-      const row = this.isBoardFlipped ? 7 - square.getRow() : square.getRow();
-      const col = this.isBoardFlipped ? 7 - square.getCol() : square.getCol();
+      const row = this.getFlippedCoordinate(square.getRow());
+      const col = this.getFlippedCoordinate(square.getCol());
 
       this.previousMoveHighlightedSquares.push({ row, col });
       this.offscreenCtx.fillStyle =
@@ -142,12 +135,8 @@ class ChessBoardHighlighter {
       }
     });
 
-    const endRow = this.isBoardFlipped
-      ? 7 - move.getEndSquare().getRow()
-      : move.getEndSquare().getRow();
-    const endCol = this.isBoardFlipped
-      ? 7 - move.getEndSquare().getCol()
-      : move.getEndSquare().getCol();
+    const endRow = this.getFlippedCoordinate(move.getEndSquare().getRow());
+    const endCol = this.getFlippedCoordinate(move.getEndSquare().getCol());
 
     this.drawPieceOnOffscreenCanvas(
       move.getPiece(),
@@ -223,8 +212,8 @@ class ChessBoardHighlighter {
     this.offscreenCtx.fill();
     this.offscreenCtx.restore();
 
-    const endRow = this.isBoardFlipped ? 7 - row : row;
-    const endCol = this.isBoardFlipped ? 7 - col : col;
+    const endRow = this.getFlippedCoordinate(row);
+    const endCol = this.getFlippedCoordinate(col);
     const piece = this.board.getPieceAt(endRow, endCol);
     if (piece) {
       this.drawPieceOnOffscreenCanvas(
@@ -239,8 +228,8 @@ class ChessBoardHighlighter {
     let row = this.kingCheckHighlightedSquare.row;
     let col = this.kingCheckHighlightedSquare.col;
 
-    const visualRow = this.isBoardFlipped ? 7 - row : row;
-    const visualCol = this.isBoardFlipped ? 7 - col : col;
+    const visualRow = this.getFlippedCoordinate(row);
+    const visualCol = this.getFlippedCoordinate(col);
     this.clearSquareOnOffscreenCanvas(row, col);
 
     const centerX = (visualCol + 0.5) * this.squareSize;
@@ -303,10 +292,8 @@ class ChessBoardHighlighter {
     const ns = "http://www.w3.org/2000/svg";
     let circle = document.createElementNS(ns, "circle");
 
-    if (this.isBoardFlipped) {
-      row = 7 - row;
-      col = 7 - col;
-    }
+    row = this.getFlippedCoordinate(row);
+    col = this.getFlippedCoordinate(col);
     const x = (col + 0.5) * this.squareSize;
     const y = (row + 0.5) * this.squareSize;
     const lineWidth = this.squareSize / 14;
@@ -322,22 +309,152 @@ class ChessBoardHighlighter {
     this.svg.appendChild(circle);
   }
 
+  drawArrow(originalSquare, endSquare) {
+    const components = this.createArrowComponents(originalSquare, endSquare);
+    this.svg.appendChild(components.line);
+    this.svg.appendChild(components.polygon);
+  }
+
+  drawAnalysisArrow(originalSquare, endSquare) {
+    this.clearTempAnalysisArrow();
+
+    const components = this.createArrowComponents(originalSquare, endSquare);
+    components.line.setAttribute("stroke", "blue");
+    components.polygon.setAttribute("fill", "blue");
+
+    this.svg.appendChild(components.line);
+    this.svg.appendChild(components.polygon);
+  }
+
+  drawTemporaryAnalysisArrow(originalSquare, endSquare) {
+    this.clearTempAnalysisArrow();
+
+    const analysisGroup = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "g"
+    );
+    analysisGroup.setAttribute("class", "tempAnalysisArrow");
+
+    const components = this.createArrowComponents(originalSquare, endSquare);
+    components.line.setAttribute("stroke", "blue");
+    components.polygon.setAttribute("fill", "blue");
+
+    analysisGroup.appendChild(components.line);
+    analysisGroup.appendChild(components.polygon);
+
+    this.svg.appendChild(analysisGroup);
+  }
+
+  drawTemporaryArrow(originalSquare, currentSquare) {
+    this.clearTempArrow();
+
+    const tempGroup = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "g"
+    );
+    tempGroup.setAttribute("class", "tempArrow");
+    const components = this.createArrowComponents(
+      originalSquare,
+      currentSquare
+    );
+
+    tempGroup.appendChild(components.line);
+    tempGroup.appendChild(components.polygon);
+    this.svg.appendChild(tempGroup);
+  }
+
+  addCircle(square) {
+    this.persistentElements.push({ type: "circle", square: square });
+    this.drawCircle(square);
+  }
+
+  addArrow(startSquare, endSquare) {
+    this.persistentElements.push({
+      type: "arrow",
+      startSquare: startSquare,
+      endSquare: endSquare,
+    });
+    this.drawArrow(startSquare, endSquare);
+  }
+
+  addAnalysisArrow(startSquare, endSquare) {
+    this.persistentBestMoveArrowElement = [];
+    this.persistentBestMoveArrowElement.push({
+      type: "analysisArrow",
+      startSquare: startSquare,
+      endSquare: endSquare,
+    });
+
+    this.drawAnalysisArrow(startSquare, endSquare);
+  }
+
+  clearTempArrow() {
+    const tempArrows = this.svg.querySelectorAll(".tempArrow");
+    tempArrows.forEach((arrow) => arrow.remove());
+  }
+
+  clearTempAnalysisArrow() {
+    const analysisArrows = this.svg.querySelectorAll(".tempAnalysisArrow");
+    analysisArrows.forEach((arrow) => arrow.remove());
+  }
+
+  clearBestMoveArrow() {
+    if (this.persistentBestMoveArrowElement.length > 0) {
+      this.persistentBestMoveArrowElement = [];
+    }
+    this.clearSVG();
+  }
+
+  clearSVG() {
+    while (this.svg.firstChild) {
+      this.svg.removeChild(this.svg.firstChild);
+    }
+    if (this.persistentBestMoveArrowElement.length > 0) {
+      const bestMoveArrow = this.persistentBestMoveArrowElement[0];
+      this.drawAnalysisArrow(
+        bestMoveArrow.startSquare,
+        bestMoveArrow.endSquare
+      );
+    }
+    this.persistentElements = [];
+  }
+
+  clearHighlights() {
+    this.clearSVG();
+    this.highlightedSquares.forEach((square) => {
+      this.redrawSquare(square.row, square.col);
+    });
+    this.highlightedSquares = [];
+    this.listOfMovesToHighlight = [];
+  }
+
+  clearPreviousMoveHighlights() {
+    this.previousMoveHighlightedSquares.forEach((square) => {
+      this.redrawSquare(square.row, square.col);
+    });
+    this.previousMoveHighlightedSquares = [];
+    this.previousMove = null;
+  }
+
+  clearSquareOnOffscreenCanvas(row, col) {
+    this.offscreenCtx.clearRect(
+      col * this.squareSize,
+      row * this.squareSize,
+      this.squareSize,
+      this.squareSize
+    );
+  }
+
   createArrowComponents(originalSquare, currentSquare) {
     const ns = "http://www.w3.org/2000/svg";
     const headLength = this.squareSize / 2;
     const lineWidth = this.squareSize / 8;
     const opacity = 0.7;
-    let visualOriginalRow = originalSquare.row;
-    let visualOriginalCol = originalSquare.col;
-    let visualCurrentRow = currentSquare.row;
-    let visualCurrentCol = currentSquare.col;
+    let visualOriginalRow = this.getFlippedCoordinate(originalSquare.row);
+    let visualOriginalCol = this.getFlippedCoordinate(originalSquare.col);
+    let visualCurrentRow = this.getFlippedCoordinate(currentSquare.row);
+    let visualCurrentCol = this.getFlippedCoordinate(currentSquare.col);
 
-    if (this.isBoardFlipped) {
-      visualOriginalRow = 7 - originalSquare.row;
-      visualOriginalCol = 7 - originalSquare.col;
-      visualCurrentRow = 7 - currentSquare.row;
-      visualCurrentCol = 7 - currentSquare.col;
-    }
     const x1 = (visualOriginalCol + 0.5) * this.squareSize;
     const y1 = (visualOriginalRow + 0.5) * this.squareSize;
     const x2 = (visualCurrentCol + 0.5) * this.squareSize;
@@ -368,111 +485,6 @@ class ChessBoardHighlighter {
     polygon.setAttribute("opacity", opacity);
 
     return { line, polygon };
-  }
-
-  drawArrow(originalSquare, endSquare) {
-    const components = this.createArrowComponents(
-      originalSquare,
-      endSquare,
-      false
-    );
-    this.svg.appendChild(components.line);
-    this.svg.appendChild(components.polygon);
-  }
-
-  drawAnalysisArrow(fromSquare, toSquare) {
-    this.clearAnalysisArrow();
-
-    const analysisGroup = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "g"
-    );
-    analysisGroup.setAttribute("class", "analysisArrow");
-
-    const components = this.createArrowComponents(fromSquare, toSquare);
-    components.line.setAttribute("stroke", "blue");
-    components.polygon.setAttribute("fill", "blue");
-
-    analysisGroup.appendChild(components.line);
-    analysisGroup.appendChild(components.polygon);
-
-    this.svg.appendChild(analysisGroup);
-  }
-
-  drawTemporaryArrow(originalSquare, currentSquare) {
-    this.clearTempArrow();
-
-    const tempGroup = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "g"
-    );
-    tempGroup.setAttribute("class", "tempArrow");
-    const components = this.createArrowComponents(
-      originalSquare,
-      currentSquare,
-      true
-    );
-
-    tempGroup.appendChild(components.line);
-    tempGroup.appendChild(components.polygon);
-    this.svg.appendChild(tempGroup);
-  }
-
-  addCircle(square) {
-    this.persistentElements.push({ type: "circle", square: square });
-    this.drawCircle(square);
-  }
-
-  addArrow(startSquare, endSquare) {
-    this.persistentElements.push({
-      type: "arrow",
-      startSquare: startSquare,
-      endSquare: endSquare,
-    });
-    this.drawArrow(startSquare, endSquare);
-  }
-
-  clearTempArrow() {
-    const tempArrows = this.svg.querySelectorAll(".tempArrow");
-    tempArrows.forEach((arrow) => arrow.remove());
-  }
-
-  clearAnalysisArrow() {
-    const analysisArrows = this.svg.querySelectorAll(".analysisArrow");
-    analysisArrows.forEach((arrow) => arrow.remove());
-  }
-
-  clearSVG() {
-    while (this.svg.firstChild) {
-      this.svg.removeChild(this.svg.firstChild);
-    }
-    this.persistentElements = [];
-  }
-
-  clearHighlights() {
-    this.clearSVG();
-    this.highlightedSquares.forEach((square) => {
-      this.redrawSquare(square.row, square.col);
-    });
-    this.highlightedSquares = [];
-    this.listOfMovesToHighlight = [];
-  }
-
-  clearPreviousMoveHighlights() {
-    this.previousMoveHighlightedSquares.forEach((square) => {
-      this.redrawSquare(square.row, square.col);
-    });
-    this.previousMoveHighlightedSquares = [];
-    this.previousMove = null;
-  }
-
-  clearSquareOnOffscreenCanvas(row, col) {
-    this.offscreenCtx.clearRect(
-      col * this.squareSize,
-      row * this.squareSize,
-      this.squareSize,
-      this.squareSize
-    );
   }
 
   redrawSquare(row, col) {
@@ -508,6 +520,17 @@ class ChessBoardHighlighter {
         this.drawArrow(element.startSquare, element.endSquare);
       }
     });
+    if (this.persistentBestMoveArrowElement.length > 0) {
+      const bestMoveArrow = this.persistentBestMoveArrowElement[0];
+      this.drawAnalysisArrow(
+        bestMoveArrow.startSquare,
+        bestMoveArrow.endSquare
+      );
+    }
+  }
+
+  getFlippedCoordinate(coordinate) {
+    return this.isBoardFlipped ? 7 - coordinate : coordinate;
   }
 
   updateSquareSize(squareSize) {

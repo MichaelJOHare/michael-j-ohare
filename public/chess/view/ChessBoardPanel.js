@@ -182,8 +182,16 @@ class ChessBoardPanel {
     this.boardHighlighter.kingCheckHighlightedSquare = { row, col };
   }
 
-  drawSFAnalysisArrow(fromSquare, toSquare) {
-    this.boardHighlighter.drawAnalysisArrow(fromSquare, toSquare);
+  drawTemporaryAnalysisArrow(fromSquare, toSquare) {
+    this.boardHighlighter.drawTemporaryAnalysisArrow(fromSquare, toSquare);
+  }
+
+  drawBestMoveAnalysisArrow(fromSquare, toSquare) {
+    this.boardHighlighter.addAnalysisArrow(fromSquare, toSquare);
+  }
+
+  clearBestMoveArrow() {
+    this.boardHighlighter.clearBestMoveArrow();
   }
 
   clearHighlights() {
@@ -360,6 +368,7 @@ class ChessBoardPanel {
     const flipBoardButton = document.getElementById("flip-board");
     const resetBoardButton = document.getElementById("reset-board");
     const submitFENButton = document.getElementById("submit-fen");
+    const sfAnalysisCheckbox = document.getElementById("sf-analysis-checkbox");
 
     previousMoveButton.addEventListener("click", () => {
       this.onPreviousMoveButtonClick();
@@ -380,18 +389,12 @@ class ChessBoardPanel {
       this.onSubmitFENButtonClick();
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const sfAnalysisCheckbox = document.getElementById(
-        "sf-analysis-checkbox"
-      );
-
-      sfAnalysisCheckbox.addEventListener("change", (event) => {
-        if (event.target.checked) {
-          this.guiController.toggleContinuousAnalysis(true);
-        } else {
-          this.guiController.toggleContinuousAnalysis(false);
-        }
-      });
+    sfAnalysisCheckbox.addEventListener("change", (event) => {
+      if (event.target.checked) {
+        this.guiController.toggleContinuousAnalysis(true);
+      } else {
+        this.guiController.toggleContinuousAnalysis(false);
+      }
     });
 
     if (screen.orientation) {

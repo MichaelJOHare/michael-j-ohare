@@ -1,10 +1,17 @@
 import ChessBoard from "../model/board/ChessBoard.js";
-import PieceType from "../model/pieces/PieceType.js";
-import PlayerColor from "../model/player/PlayerColor.js";
 
 export default class FENGenerator {
   static toFEN(board, move, gameState) {
     let fen = "";
+
+    const pieceToFENMap = {
+      KING: { WHITE: "K", BLACK: "k" },
+      QUEEN: { WHITE: "Q", BLACK: "q" },
+      ROOK: { WHITE: "R", BLACK: "r" },
+      BISHOP: { WHITE: "B", BLACK: "b" },
+      KNIGHT: { WHITE: "N", BLACK: "n" },
+      PAWN: { WHITE: "P", BLACK: "p" },
+    };
 
     // 1. Piece placement
     for (let row = 0; row < ChessBoard.ROW_LENGTH; row++) {
@@ -18,62 +25,29 @@ export default class FENGenerator {
             fen += emptySquares;
             emptySquares = 0;
           }
-          fen += pieceToFEN(piece);
+          const pieceFEN =
+            pieceToFENMap[piece.getType()][piece.getPlayer().getColor()];
+          fen += pieceFEN;
         }
       }
       if (emptySquares !== 0) {
         fen += emptySquares;
       }
-      if (row < 7) {
+      if (row < ChessBoard.ROW_LENGTH - 1) {
         fen += "/";
       }
     }
 
-    // 2. The side to move
-    fen += " " + (gameState.currentPlayer.isWhite() ? "w" : "b") + " ";
-
-    // 3. Castling availability
-    fen += generateCastlingAvailability(board);
-
-    // 4. En passant target square
+    // Append other FEN parts (simplified for brevity)
+    fen += " " + (gameState.currentPlayer.isWhite() ? "w" : "b");
+    fen += " " + generateCastlingAvailability(board);
     fen +=
       " " +
-      (move.getEnPassantTarget() ? move.getEnPassantTarget().toString() : "-") +
-      " ";
-
-    // 5. Halfmove clock
-    fen += " " + move.halfMoveClock + " ";
-
-    // 6. Fullmove number
+      (move.getEnPassantTarget() ? move.getEnPassantTarget().toString() : "-");
+    fen += " " + move.halfMoveClock;
     fen += " " + move.fullMoveNumber;
 
     return fen;
-  }
-}
-
-function pieceToFEN(piece) {
-  if (!piece || !piece.getType() || !piece.getPlayer()) {
-    throw new Error("Invalid piece");
-  }
-
-  const pieceType = piece.getType();
-  const playerColor = piece.getPlayer().getColor();
-
-  switch (pieceType) {
-    case PieceType.KING:
-      return playerColor === PlayerColor.WHITE ? "K" : "k";
-    case PieceType.QUEEN:
-      return playerColor === PlayerColor.WHITE ? "Q" : "q";
-    case PieceType.ROOK:
-      return playerColor === PlayerColor.WHITE ? "R" : "r";
-    case PieceType.BISHOP:
-      return playerColor === PlayerColor.WHITE ? "B" : "b";
-    case PieceType.KNIGHT:
-      return playerColor === PlayerColor.WHITE ? "N" : "n";
-    case PieceType.PAWN:
-      return playerColor === PlayerColor.WHITE ? "P" : "p";
-    default:
-      throw new Error("Unknown piece type");
   }
 }
 

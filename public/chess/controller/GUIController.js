@@ -87,7 +87,15 @@ class GUIController {
   }
 
   handleAnalysisArrow(fromSquare, toSquare) {
-    this.chessBoardPanel.drawSFAnalysisArrow(fromSquare, toSquare);
+    this.chessBoardPanel.drawTemporaryAnalysisArrow(fromSquare, toSquare);
+  }
+
+  handleBestMoveArrow(fromSquare, toSquare) {
+    this.chessBoardPanel.drawBestMoveAnalysisArrow(fromSquare, toSquare);
+  }
+
+  clearBestMoveArrow() {
+    this.chessBoardPanel.clearBestMoveArrow();
   }
 
   toggleContinuousAnalysis(enabled) {
