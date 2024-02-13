@@ -86,6 +86,14 @@ class GUIController {
     this.chessBoardPanel.drawBoard();
   }
 
+  handleAnalysisArrow(fromSquare, toSquare) {
+    this.chessBoardPanel.drawSFAnalysisArrow(fromSquare, toSquare);
+  }
+
+  toggleContinuousAnalysis(enabled) {
+    this.gameController.toggleContinuousAnalysis(enabled);
+  }
+
   updateGUI() {
     this.writeCurrentFENString();
     this.gameLogPanel.updateGameLog();

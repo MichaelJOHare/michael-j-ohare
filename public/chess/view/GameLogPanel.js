@@ -70,56 +70,49 @@ class GameLogPanel {
   }
 
   createGameLogObject(move) {
-    let movingPiece = move.piece;
-    let pieceSymbol = "";
-    let endSquare = move.endSquare;
     // FOR DISAMBIGUATION:
     // Need to figure out if two of the same player's knight/rook (and bishop/queen after promotion)
     //      could've captured, or moved to, same square ->
     //                       include rank or file, or both if on same file/rank
+    let movingPiece = move.piece;
+    let pieceSymbol = "";
+    let endSquare = move.endSquare ? move.endSquare.toString() : "";
     let captureSymbol = move.isCapture ? "x" : "";
     let promotionSymbol = move.isPromotion ? "=" : "";
+    let notation = "";
 
     if (move instanceof CastlingMove) {
-      if (
+      notation =
         Math.abs(move.rookStartSquare.getCol() - move.rookEndSquare.getCol()) >
         2
-      ) {
-        return "O-O-O";
-      } else {
-        return "O-O";
-      }
+          ? "O-O-O"
+          : "O-O";
+      return { pieceSymbol, notation };
     }
 
     if (!(movingPiece instanceof Pawn)) {
-      // should check if dark mode
       pieceSymbol = movingPiece.getChessPieceSymbol();
-    } else {
-      if (move.isCapture) {
-        pieceSymbol = move.startSquare.toString().substring(0, 1);
-      }
+    } else if (move.isCapture) {
+      pieceSymbol = move.startSquare.toString().substring(0, 1);
     }
 
     if (move instanceof PromotionMove) {
-      pieceSymbol = "";
-      if (move.capturedPiece !== null) {
-        pieceSymbol = move.startSquare.toString().substring(0, 1);
-        captureSymbol = "x";
-      }
-      // should check if dark mode
+      pieceSymbol =
+        move.capturedPiece !== null
+          ? move.startSquare.toString().substring(0, 1)
+          : "";
+      captureSymbol = move.capturedPiece !== null ? "x" : "";
       let promotedPieceSymbol = movingPiece.getChessPieceSymbol();
-
       promotionSymbol += promotedPieceSymbol;
     }
 
-    return {
-      pieceSymbol,
-      notation:
-        captureSymbol +
-        endSquare +
-        promotionSymbol +
-        this.appendCheckOrCheckmateSymbol(move.checkState),
-    };
+    notation =
+      captureSymbol +
+      endSquare +
+      promotionSymbol +
+      this.appendCheckOrCheckmateSymbol(move.checkState);
+
+    return { pieceSymbol, notation };
   }
 
   appendCheckOrCheckmateSymbol(checkState) {

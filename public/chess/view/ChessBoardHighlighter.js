@@ -380,6 +380,25 @@ class ChessBoardHighlighter {
     this.svg.appendChild(components.polygon);
   }
 
+  drawAnalysisArrow(fromSquare, toSquare) {
+    this.clearAnalysisArrow();
+
+    const analysisGroup = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "g"
+    );
+    analysisGroup.setAttribute("class", "analysisArrow");
+
+    const components = this.createArrowComponents(fromSquare, toSquare);
+    components.line.setAttribute("stroke", "blue");
+    components.polygon.setAttribute("fill", "blue");
+
+    analysisGroup.appendChild(components.line);
+    analysisGroup.appendChild(components.polygon);
+
+    this.svg.appendChild(analysisGroup);
+  }
+
   drawTemporaryArrow(originalSquare, currentSquare) {
     this.clearTempArrow();
 
@@ -416,6 +435,11 @@ class ChessBoardHighlighter {
   clearTempArrow() {
     const tempArrows = this.svg.querySelectorAll(".tempArrow");
     tempArrows.forEach((arrow) => arrow.remove());
+  }
+
+  clearAnalysisArrow() {
+    const analysisArrows = this.svg.querySelectorAll(".analysisArrow");
+    analysisArrows.forEach((arrow) => arrow.remove());
   }
 
   clearSVG() {

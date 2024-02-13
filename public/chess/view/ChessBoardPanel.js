@@ -182,6 +182,10 @@ class ChessBoardPanel {
     this.boardHighlighter.kingCheckHighlightedSquare = { row, col };
   }
 
+  drawSFAnalysisArrow(fromSquare, toSquare) {
+    this.boardHighlighter.drawAnalysisArrow(fromSquare, toSquare);
+  }
+
   clearHighlights() {
     this.boardHighlighter.clearHighlights();
   }
@@ -374,6 +378,20 @@ class ChessBoardPanel {
     });
     submitFENButton.addEventListener("click", () => {
       this.onSubmitFENButtonClick();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const sfAnalysisCheckbox = document.getElementById(
+        "sf-analysis-checkbox"
+      );
+
+      sfAnalysisCheckbox.addEventListener("change", (event) => {
+        if (event.target.checked) {
+          this.guiController.toggleContinuousAnalysis(true);
+        } else {
+          this.guiController.toggleContinuousAnalysis(false);
+        }
+      });
     });
 
     if (screen.orientation) {

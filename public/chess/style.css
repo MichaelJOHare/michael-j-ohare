@@ -121,6 +121,14 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   margin-bottom: 10px;
 }
 
+#stockfish-analysis {
+  display: flex;
+}
+
+#stockfish-analysis-title {
+  margin-right: 10px;
+}
+
 #move-history {
   display: flex;
   flex-wrap: wrap;
@@ -149,10 +157,6 @@ html[data-theme="dark"] .current-move-highlight {
 
 html[data-theme="dark"] .current-move-highlight .black-piece {
   color: #212121;
-}
-
-#move-history-title {
-  text-align: center;
 }
 
 .full-move {

@@ -41,7 +41,21 @@
           </div>
         </div>
         <div id="sidebar">
-          <div id="move-history-title"><h4>Move History</h4></div>
+          <div id="stockfish-analysis">
+            <h5 id="stockfish-analysis-title">Stockfish Analysis</h5>
+            <fieldset>
+              <label>
+                <input
+                  id="sf-analysis-checkbox"
+                  name="sf-analysis"
+                  type="checkbox"
+                  role="switch"
+                  aria-invalid="false"
+                />
+                SF 16 NNUE
+              </label>
+            </fieldset>
+          </div>
           <div id="move-history"></div>
           <div id="navigation">
             <button id="prev-move" title="Previous Move">

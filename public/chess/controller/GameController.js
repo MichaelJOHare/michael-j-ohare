@@ -4,7 +4,7 @@ import MoveHistory from "../model/moves/MoveHistory.js";
 import GUIController from "./GUIController.js";
 import MoveHandler from "../model/moves/MoveHandler.js";
 import FENGenerator from "../utils/FENGenerator.js";
-//import StockfishController from "./StockfishController.js";
+import StockfishController from "./StockfishController.js";
 
 class GameController {
   constructor() {
@@ -23,7 +23,12 @@ class GameController {
       this.mementos,
       this.pm
     );
-    //this.sfController = new StockfishController();
+    this.sfController = new StockfishController(
+      this.board,
+      this.move,
+      this.gs,
+      this.guiController
+    );
 
     this.initiateGame();
   }
@@ -76,10 +81,20 @@ class GameController {
       this.mh.handleSelectPieceClick(row, col);
     } else {
       this.mh.handleMovePieceClick(row, col);
+      if (this.sfController.isAnalysisEnabled) {
+        this.sfController.toggleContinuousAnalysis(true);
+      }
     }
 
     if (this.gs.getCurrentPlayer().isStockfish()) {
       this.makeStockfishMove();
+      if (this.sfController.isAnalysisEnabled) {
+        this.sfController.toggleContinuousAnalysis(true);
+      }
+    }
+
+    if (this.gs.isGameOver) {
+      this.sfController.cleanUp();
     }
   }
 
@@ -97,10 +112,20 @@ class GameController {
     if (this.gs.getCurrentPlayer().isStockfish()) {
       this.makeStockfishMove();
     }
+    if (this.sfController.isAnalysisEnabled) {
+      this.sfController.toggleContinuousAnalysis(true);
+    }
+
+    if (this.gs.isGameOver) {
+      this.sfController.cleanUp();
+    }
   }
 
   handlePreviousMoveButtonClick() {
     this.mh.handleUndoMove();
+    if (this.sfController.isAnalysisEnabled) {
+      this.sfController.toggleContinuousAnalysis(true);
+    }
   }
 
   handleSingleUndo() {
@@ -108,7 +133,13 @@ class GameController {
   }
 
   handleNextMoveButtonClick() {
-    return this.mh.handleRedoMove();
+    this.mh.handleRedoMove();
+    if (this.sfController.isAnalysisEnabled) {
+      this.sfController.toggleContinuousAnalysis(true);
+    }
+    if (this.gs.isGameOver) {
+      this.sfController.cleanUp();
+    }
   }
 
   handleSingleRedo() {
@@ -122,11 +153,12 @@ class GameController {
   generateCurrentFEN() {
     return FENGenerator.toFEN(this.board, this.move, this.gs);
   }
-  /*
-    askStockFish() {
-    this.sfController.getBestMove();
+
+  toggleContinuousAnalysis(enabled) {
+    this.sfController.toggleContinuousAnalysis(enabled);
   }
 
+  /*
   makeStockfishMove() {
     this.sfController.makeMove();
   }
@@ -145,12 +177,6 @@ class GameController {
     this.guiController.updateGUI();
     this.initiateGame();
   }
-
-  /*
-  cleanup() {
-    this.sfController.cleanup();
-  }
-  */
 }
 
 export default GameController;

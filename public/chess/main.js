@@ -4,6 +4,7 @@ const gameController = new GameController();
 
 /*
 TO DO
+ - Handle board flip stockfish + optimize starting/restarting on move made (bind GUI toggle in gamecontroller constructor)
  - Fix chessboard-wrapper width on mobile
 
  - Make drawing arrow/circle over pre-existing arrow/circle remove it.
@@ -14,7 +15,6 @@ TO DO
  - Go through and change private fields to normal, remove getters.
      -Thought it was a good idea, not liking it now.  Maybe keep setters?  They make sense in my brain
  - Make move piece with click a smooth glide to location
-      - Add onTouchMove, maybe sounds, etc.
- - Implement drawing arrows/circles with right click
- - Implement stockfish/misc UI (maybe PGN box)
+      - Add sounds
+ - Implement play vs stockfish and PGN box
 */
