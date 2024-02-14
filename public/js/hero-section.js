@@ -10,11 +10,11 @@ class HeroSection extends HTMLElement {
         </ul>
         <ul>
           <li>
-            <details role="list" dir="rtl">
+            <details role="list" class="dropdown">
               <summary aria-haspopup="listbox" role="link" class="contrast">
                 Website Theme
               </summary>
-              <ul role="listbox">
+              <ul role="listbox" dir="rtl">
                 <li><a href="#" data-theme-switcher="auto">Auto</a></li>
                 <li><a href="#" data-theme-switcher="light">Light</a></li>
                 <li><a href="#" data-theme-switcher="dark">Dark</a></li>
@@ -22,11 +22,12 @@ class HeroSection extends HTMLElement {
             </details>
           </li>
           <li>
-            <details role="list" dir="rtl">
+            <details role="list" class="dropdown">
               <summary aria-haspopup="listbox" role="link" class="contrast">
                 Past Side Projects
               </summary>
-              <ul role="listbox">
+              <ul role="listbox" dir="rtl">
+                <li><a href="/chess/">Play Chess (ft. Stockfish)</a></li>
                 <li>
                   <a href="https://github.com/MichaelJOHare/chess-application2.0">Java Chess Application</a>
                 </li>

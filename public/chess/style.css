@@ -1,12 +1,11 @@
 :root {
-  --font-weight: 400;
-  --border-radius: 0;
+  --pico-spacing-company: 1rem;
 }
 
 h2,
 h3,
 hgroup > :last-child {
-  font-weight: 200;
+  --pico-font-weight: 200;
 }
 
 .hero {
@@ -14,24 +13,18 @@ hgroup > :last-child {
   background-image: url("../images/hero.png");
   background-position: center;
   background-size: cover;
-  padding-bottom: 10px;
 }
 
 header {
-  padding: var(--spacing-company) 0;
+  padding: var(--pico-spacing-company) 0;
 }
 
 header hgroup > :last-child {
-  color: var(--h3-color);
+  color: var(--pico-h1-color);
 }
 
 header hgroup {
-  margin-bottom: var(--spacing-company);
-}
-
-summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
-  background-color: transparent;
-  color: var(--contrast-hover);
+  margin-bottom: var(--pico-spacing-company);
 }
 
 #outer-container {
@@ -93,6 +86,14 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   flex-direction: column;
 }
 
+#prev-move,
+#next-move,
+#flip-board,
+#import-from-fen,
+#reset-board {
+  width: 100%;
+}
+
 #fen-import-container {
   margin-top: 10px;
 }
@@ -111,14 +112,12 @@ summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
   background: #21724a;
 }
 
-#flip-board,
-#import-from-fen,
-#reset-board {
-  cursor: pointer;
-}
-
 #flip-board {
   margin-bottom: 10px;
+}
+
+#flip-fen-import {
+  margin-top: 10px;
 }
 
 #stockfish-analysis {
@@ -201,7 +200,9 @@ html[data-theme="dark"] .black-piece {
 
 #next-move-icon,
 #prev-move-icon {
+  aspect-ratio: 1 / 1;
   height: 4vmin;
+  width: 100%;
 }
 
 #text-areas-container {
@@ -268,6 +269,10 @@ html[data-theme="dark"] .black-piece {
     margin: 0;
   }
 
+  #flip-fen-import {
+    margin-bottom: 20px;
+  }
+
   #move-history {
     min-height: 150px;
     width: 100%;
@@ -276,9 +281,25 @@ html[data-theme="dark"] .black-piece {
   #navigation {
     order: -1;
     margin-top: 20px;
+    margin-bottom: 10px;
   }
 
   #text-areas-container {
     margin-top: 0;
+  }
+
+  #fen-title-box,
+  #pgn-title-box {
+    flex-direction: column;
+  }
+
+  #fen-title {
+    order: -1;
+    margin: 0;
+  }
+
+  #pgn-title {
+    order: -1;
+    margin: 0;
   }
 }

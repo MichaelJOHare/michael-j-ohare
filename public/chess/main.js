@@ -4,6 +4,8 @@ const gameController = new GameController();
 
 /*
 TO DO
+ -FIX stockfish arrow on mobile
+
  - Optimize FENGenerator further (castling availability?)
  - Fix chessboard-wrapper width on mobile
 

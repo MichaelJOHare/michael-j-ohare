@@ -1,13 +1,11 @@
 :root {
-  --spacing-company: 3rem;
-  --font-weight: 400;
-  --border-radius: 0;
+  --pico-spacing-company: 2rem;
 }
 
 h2,
 h3,
 hgroup > :last-child {
-  font-weight: 200;
+  --pico-font-weight: 200;
 }
 
 .hero {
@@ -18,20 +16,15 @@ hgroup > :last-child {
 }
 
 header {
-  padding: var(--spacing-company) 0;
+  padding: var(--pico-spacing-company) 0;
 }
 
 header hgroup > :last-child {
-  color: var(--h3-color);
+  color: var(--pico-h1-color);
 }
 
 header hgroup {
-  margin-bottom: var(--spacing-company);
-}
-
-summary[role="link"].contrast:is([aria-current], :hover, :active, :focus) {
-  background-color: transparent;
-  color: var(--contrast-hover);
+  margin-bottom: var(--pico-spacing-company);
 }
 
 #results {
