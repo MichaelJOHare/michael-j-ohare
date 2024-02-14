@@ -45,7 +45,21 @@
             for 10 years I was able to enjoy all of those quite a lot.
           </p>
           <figure>
-            <img src="images/backflip.jpg" alt="Backflip on skis" />
+            <img
+              src="images/backflip-large.png"
+              srcset="
+                images/backflip-small.png   512w,
+                images/backflip-medium.png  885w,
+                images/backflip-large.png  1072w
+              "
+              sizes="
+              (max-width: 576px) 510px, 
+              (max-width: 1024px) 700px, 
+              (max-width: 1280px) 885px, 
+              (max-width: 1536px) 1072px, 
+              calc(100vw-32px)"
+              alt="Backflip on skis"
+            />
           </figure>
           <h3>Why software development?</h3>
           <p>
@@ -83,7 +97,22 @@
 
         <aside>
           <a href="/chess/"
-            ><img src="images/chess.png" alt="Chess Picture"
+            ><img
+              src="images/chess-xtra-large.png"
+              srcset="
+                images/chess-small.png      171w,
+                images/chess-medium.png     233w,
+                images/chess-large.png      357w,
+                images/chess-xtra-large.png 479w
+              "
+              sizes="
+              (min-width: 576px) 479px,
+              (max-width: 768px) 171px,
+              (max-width: 1024) 233px,
+              (max-width: 1280px) 295px,
+              (max-width: 1536) 357px,
+              calc(100vw-32px)"
+              alt="Chess Picture"
           /></a>
           <p>
             <a href="/chess/">My current side-project</a><br />
@@ -98,7 +127,20 @@
             </small>
           </p>
           <a href="https://github.com/MichaelJOHare"
-            ><img src="images/Codingpic.jpg" alt="Coding Picture"
+            ><img
+              src="images/coding-pic-large.png"
+              srcset="
+                images/coding-pic-small.png  456w,
+                images/coding-pic-large.png 1020w
+              "
+              sizes="
+              (min-width: 576px) 510px,
+              (max-width: 768px) 171px,
+              (max-width: 1024) 233px,
+              (max-width: 1280px) 295px,
+              (max-width: 1536) 357px,
+              calc(100vw-32px)"
+              alt="Coding Picture"
           /></a>
           <p>
             <a href="https://github.com/MichaelJOHare">My Github</a><br />
