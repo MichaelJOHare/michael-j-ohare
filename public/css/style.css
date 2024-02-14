@@ -2,6 +2,11 @@
   --pico-spacing-company: 2rem;
 }
 
+body {
+  margin: 0;
+  height: 100vh;
+}
+
 h2,
 h3,
 hgroup > :last-child {
