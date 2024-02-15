@@ -11,6 +11,31 @@
         "source": "**",
         "destination": "/index.html"
       }
-    ]
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cross-Origin-Embedder-Policy",
+            "value": "require-corp"
+          },
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": "same-origin"
+          }
+        ]
+      }
+    ],
+    "trailingSlash": false
+  },
+  "emulators": {
+    "hosting": {
+      "port": 50002
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

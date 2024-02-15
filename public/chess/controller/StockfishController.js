@@ -8,7 +8,7 @@ class StockfishController {
     this.gameState = gameState;
     this.gui = gui;
 
-    this.stockfish = new Worker("/chess/stockfish/stockfish-nnue-16-single.js");
+    this.stockfish = new Worker("/chess/stockfish/stockfish-nnue-16.js");
     this.debouncer = new Debouncer(300);
     this.stockfish.onmessage = this.handleStockfishMessage.bind(this);
     this.isAnalysisEnabled = false;
@@ -29,6 +29,9 @@ class StockfishController {
   }
 
   sendCommand(command) {
+    if (["position", "go"].some((cmd) => command.startsWith(cmd))) {
+      this.stopCurrentAnalysis();
+    }
     this.stockfish.postMessage(command);
   }
 
@@ -45,7 +48,7 @@ class StockfishController {
       ) {
         const moveData = event.data.match(/pv (\w{2}\w{2})/);
         if (moveData) {
-          this.updateArrow(moveData[1]);
+          this.updateTemporaryAnalysisArrow(moveData[1]);
           this.lastDepthUpdated = depth;
           this.lastArrowUpdate = currentTime;
         }
@@ -64,6 +67,7 @@ class StockfishController {
   toggleContinuousAnalysis(enable) {
     this.isAnalysisEnabled = enable;
     if (enable) {
+      this.sendCommand("setoption name Use NNUE value true");
       this.sendCommand("ucinewgame");
       this.sendCommand("isready");
       this.requestAnalysisIfNeeded();
@@ -74,13 +78,13 @@ class StockfishController {
 
   getMove(fen) {
     this.sendCommand(`position fen ${fen}`);
-    this.sendCommand("go movetime 2000");
+    this.sendCommand("go depth 20");
   }
 
   requestAnalysisIfNeeded() {
     const newPositionHash = this.calculatePositionHash();
     if (this.isAnalysisEnabled && newPositionHash !== this.positionHash) {
-      this.clearBestMoveArrow();
+      this.stopCurrentAnalysis();
       this.positionHash = newPositionHash;
       this.debouncer.debounce(() => this.getMove(newPositionHash));
     } else if (this.bestMove) {
@@ -88,17 +92,13 @@ class StockfishController {
     }
   }
 
-  updateArrow(moveData) {
+  updateTemporaryAnalysisArrow(moveData) {
     const fromSquare = moveData.substring(0, 2);
     const toSquare = moveData.substring(2, 4);
-    this.updateTemporaryAnalysisArrow(fromSquare, toSquare);
+    this.addTemporaryAnalysisArrow(fromSquare, toSquare);
   }
 
-  clearBestMoveArrow() {
-    this.gui.clearBestMoveArrow();
-  }
-
-  updateTemporaryAnalysisArrow(fromSquare, toSquare) {
+  addTemporaryAnalysisArrow(fromSquare, toSquare) {
     const from = this.convertNotationToSquare(fromSquare);
     const to = this.convertNotationToSquare(toSquare);
 
@@ -124,6 +124,15 @@ class StockfishController {
     const row = 8 - parseInt(notation[1]);
 
     return { row, col };
+  }
+
+  clearBestMoveArrow() {
+    this.gui.clearBestMoveArrow();
+    this.bestMove = null;
+  }
+
+  stopCurrentAnalysis() {
+    this.stockfish.postMessage("stop");
   }
 
   cleanUp() {

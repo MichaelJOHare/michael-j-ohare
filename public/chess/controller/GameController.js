@@ -129,9 +129,7 @@ class GameController {
 
   handleNextMoveButtonClick() {
     this.mh.handleRedoMove();
-    if (this.sfController.isAnalysisEnabled) {
-      this.sfController.toggleContinuousAnalysis(true);
-    }
+    this.requestStockfishAnalysis();
     if (this.gs.isGameOver) {
       this.sfController.cleanUp();
     }
@@ -161,6 +159,7 @@ class GameController {
 
   requestStockfishAnalysis() {
     if (this.sfController.isAnalysisEnabled) {
+      this.sfController.clearBestMoveArrow();
       this.sfController.requestAnalysisIfNeeded();
     }
   }

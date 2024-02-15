@@ -4,10 +4,8 @@ const gameController = new GameController();
 
 /*
 TO DO
- -FIX stockfish arrow on mobile
-
+ - Fix stockfish best move arrow drawn after moving during analysis
  - Optimize FENGenerator further (castling availability?)
- - Fix chessboard-wrapper width on mobile
 
  - Make drawing arrow/circle over pre-existing arrow/circle remove it.
 
