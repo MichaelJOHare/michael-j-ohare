@@ -102,6 +102,10 @@ class GUIController {
     this.gameController.toggleContinuousAnalysis(enabled);
   }
 
+  toggleClassicalContinuousAnalysis(enabled) {
+    this.gameController.toggleClassicalContinuousAnalysis(enabled);
+  }
+
   updateGUI() {
     this.writeCurrentFENString();
     this.gameLogPanel.updateGameLog();

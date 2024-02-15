@@ -8,11 +8,11 @@ class StockfishController {
     this.gameState = gameState;
     this.gui = gui;
 
-    this.stockfish = new Worker("/chess/stockfish/stockfish-nnue-16.js");
     this.debouncer = new Debouncer(300);
-    this.stockfish.onmessage = this.handleStockfishMessage.bind(this);
-    this.isAnalysisEnabled = false;
+    this.isContinuousAnalysisEnabled = false;
+    this.isClassicalContinuousAnalysisEnabled = false;
 
+    this.lastCommand = "";
     this.lastArrowUpdate = Date.now();
     this.lastDepthUpdated = 0;
     this.updateInterval = 3000;
@@ -20,8 +20,6 @@ class StockfishController {
 
     this.positionHash;
     this.bestMove;
-
-    this.initEngine();
   }
 
   initEngine() {
@@ -29,13 +27,12 @@ class StockfishController {
   }
 
   sendCommand(command) {
-    if (["position", "go"].some((cmd) => command.startsWith(cmd))) {
-      this.stopCurrentAnalysis();
-    }
+    this.lastCommand = command;
     this.stockfish.postMessage(command);
   }
 
   handleStockfishMessage(event) {
+    console.log("Stockfish says: ", event.data);
     if (event.data.startsWith("info depth")) {
       const depth = parseInt(event.data.split(" ")[2]);
       const currentTime = Date.now();
@@ -54,22 +51,39 @@ class StockfishController {
     }
 
     if (event.data.startsWith("bestmove")) {
-      const bestMove = event.data.split(" ")[1];
-      this.bestMove = bestMove;
-      this.addBestMoveAnalysisArrow(bestMove);
-      this.lastDepthUpdated = 0;
-      this.lastArrowUpdate = Date.now();
+      if (this.lastCommand !== "stop") {
+        const bestMove = event.data.split(" ")[1];
+        this.bestMove = bestMove;
+        this.addBestMoveAnalysisArrow(bestMove);
+        this.lastDepthUpdated = 0;
+        this.lastArrowUpdate = Date.now();
+      }
     }
   }
 
   toggleContinuousAnalysis(enable) {
-    this.isAnalysisEnabled = enable;
+    this.isContinuousAnalysisEnabled = enable;
     if (enable) {
+      this.gui.clearBestMoveArrow();
+      this.ensureEngineInitialized();
       this.sendCommand("setoption name Use NNUE value true");
       this.sendCommand("ucinewgame");
       this.sendCommand("isready");
       this.requestAnalysisIfNeeded();
-    } else {
+    } else if (!enable && !this.isClassicalContinuousAnalysisEnabled) {
+      this.cleanUp();
+    }
+  }
+
+  toggleClassicalContinuousAnalysis(enable) {
+    this.isClassicalContinuousAnalysisEnabled = enable;
+    if (enable) {
+      this.gui.clearBestMoveArrow();
+      this.ensureEngineInitialized();
+      this.sendCommand("ucinewgame");
+      this.sendCommand("isready");
+      this.requestAnalysisIfNeeded();
+    } else if (!enable && !this.isContinuousAnalysisEnabled) {
       this.cleanUp();
     }
   }
@@ -81,8 +95,13 @@ class StockfishController {
 
   requestAnalysisIfNeeded() {
     const newPositionHash = this.calculatePositionHash();
-    if (this.isAnalysisEnabled && newPositionHash !== this.positionHash) {
+    if (
+      (this.isContinuousAnalysisEnabled ||
+        this.isClassicalContinuousAnalysisEnabled) &&
+      newPositionHash !== this.positionHash
+    ) {
       this.stopCurrentAnalysis();
+      this.gui.clearBestMoveArrow();
       this.positionHash = newPositionHash;
       this.debouncer.debounce(() => this.getMove(newPositionHash));
     } else if (this.bestMove) {
@@ -124,18 +143,21 @@ class StockfishController {
     return { row, col };
   }
 
-  clearBestMoveArrow() {
-    this.gui.clearBestMoveArrow();
-    this.bestMove = null;
+  stopCurrentAnalysis() {
+    this.sendCommand("stop");
   }
 
-  stopCurrentAnalysis() {
-    this.stockfish.postMessage("stop");
+  ensureEngineInitialized() {
+    if (!this.stockfish) {
+      this.stockfish = new Worker("/chess/stockfish/stockfish-nnue-16.js");
+      this.stockfish.onmessage = this.handleStockfishMessage.bind(this);
+      this.initEngine();
+    }
   }
 
   cleanUp() {
     this.sendCommand("stop");
-    this.clearBestMoveArrow();
+    this.gui.clearBestMoveArrow();
   }
 }
 

@@ -369,6 +369,9 @@ class ChessBoardPanel {
     const resetBoardButton = document.getElementById("reset-board");
     const submitFENButton = document.getElementById("submit-fen");
     const sfAnalysisCheckbox = document.getElementById("sf-analysis-checkbox");
+    const sfClassicalAnalysisCheckbox = document.getElementById(
+      "sf-classical-analysis-checkbox"
+    );
 
     previousMoveButton.addEventListener("click", () => {
       this.onPreviousMoveButtonClick();
@@ -392,8 +395,20 @@ class ChessBoardPanel {
     sfAnalysisCheckbox.addEventListener("change", (event) => {
       if (event.target.checked) {
         this.guiController.toggleContinuousAnalysis(true);
+        this.guiController.toggleClassicalContinuousAnalysis(false);
+        sfClassicalAnalysisCheckbox.checked = false;
       } else {
         this.guiController.toggleContinuousAnalysis(false);
+      }
+    });
+
+    sfClassicalAnalysisCheckbox.addEventListener("change", (event) => {
+      if (event.target.checked) {
+        this.guiController.toggleClassicalContinuousAnalysis(true);
+        this.guiController.toggleContinuousAnalysis(false);
+        sfAnalysisCheckbox.checked = false;
+      } else {
+        this.guiController.toggleClassicalContinuousAnalysis(false);
       }
     });
 

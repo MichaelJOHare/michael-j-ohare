@@ -151,6 +151,10 @@ class GameController {
     this.sfController.toggleContinuousAnalysis(enabled);
   }
 
+  toggleClassicalContinuousAnalysis(enabled) {
+    this.sfController.toggleClassicalContinuousAnalysis(enabled);
+  }
+
   /*
   makeStockfishMove() {
     this.sfController.makeMove();
@@ -158,7 +162,10 @@ class GameController {
   */
 
   requestStockfishAnalysis() {
-    if (this.sfController.isAnalysisEnabled) {
+    if (
+      this.sfController.isContinuousAnalysisEnabled ||
+      this.sfController.isClassicalContinuousAnalysisEnabled
+    ) {
       this.sfController.requestAnalysisIfNeeded();
     }
   }
