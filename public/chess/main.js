@@ -6,7 +6,6 @@ const gameController = new GameController();
 TO DO
  - Fix stockfish best move arrow drawn after moving during analysis
         -Fix king check highlight after promotion after reset game ??
- - Optimize FENGenerator further (castling availability?)
 
  - Make drawing arrow/circle over pre-existing arrow/circle remove it.
 
