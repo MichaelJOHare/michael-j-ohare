@@ -27,70 +27,68 @@
   </head>
   <body>
     <hero-section></hero-section>
-    <div class="container-fluid">
-      <div id="outer-container">
-        <div id="game-container">
-          <div class="chessboard-wrapper">
-            <div id="chessboard-container">
-              <canvas id="chessboard"></canvas>
-              <svg
-                id="chessSVG"
-                style="position: absolute; left: 0; top: 0; z-index: 2"
-              ></svg>
+    <div id="outer-container">
+      <div id="game-container">
+        <div class="chessboard-wrapper">
+          <div id="chessboard-container">
+            <canvas id="chessboard"></canvas>
+            <svg
+              id="chessSVG"
+              style="position: absolute; left: 0; top: 0; z-index: 2"
+            ></svg>
+          </div>
+          <div id="text-areas-container">
+            <div id="fen-title-box">
+              <h5 id="fen-title">FEN</h5>
+              <textarea id="fen-box" placeholder="FEN"></textarea>
             </div>
-            <div id="text-areas-container">
-              <div id="fen-title-box">
-                <h5 id="fen-title">FEN</h5>
-                <textarea id="fen-box" placeholder="FEN"></textarea>
-              </div>
-              <div id="pgn-title-box">
-                <h5 id="pgn-title">PGN</h5>
-                <textarea id="pgn-box" placeholder="PGN"></textarea>
-              </div>
+            <div id="pgn-title-box">
+              <h5 id="pgn-title">PGN</h5>
+              <textarea id="pgn-box" placeholder="PGN"></textarea>
             </div>
           </div>
-          <div id="sidebar">
-            <div id="stockfish-analysis">
-              <h5 id="stockfish-analysis-title">Stockfish Analysis</h5>
-              <fieldset>
-                <label>
-                  <input
-                    id="sf-analysis-checkbox"
-                    name="sf-analysis"
-                    type="checkbox"
-                    role="switch"
-                    aria-invalid="false"
-                  />
-                  SF 16 NNUE
-                </label>
-              </fieldset>
-            </div>
-            <div id="move-history"></div>
-            <div id="navigation">
-              <button id="prev-move" title="Previous Move">
-                <img
-                  id="prev-move-icon"
-                  src="./images/prev-move-arrow.svg"
-                  alt="previous-move-arrow"
+        </div>
+        <div id="sidebar">
+          <div id="stockfish-analysis">
+            <h5 id="stockfish-analysis-title">Stockfish Analysis</h5>
+            <fieldset id="stockfish-analysis-toggle">
+              <label>
+                <input
+                  id="sf-analysis-checkbox"
+                  name="sf-analysis"
+                  type="checkbox"
+                  role="switch"
+                  aria-invalid="false"
                 />
-              </button>
-              <button id="next-move" title="Next Move">
-                <img
-                  id="next-move-icon"
-                  src="./images/next-move-arrow.svg"
-                  alt="next-move-arrow"
-                />
-              </button>
-            </div>
-            <div id="fen-import-container" style="display: none">
-              <textarea id="fen-input" placeholder="Enter FEN"></textarea>
-              <button id="submit-fen">Import FEN</button>
-            </div>
-            <div id="flip-fen-import">
-              <button id="flip-board">Flip Board</button>
-              <button id="import-from-fen">Import Game from FEN</button>
-              <button id="reset-board">Reset Board</button>
-            </div>
+                SF 16 NNUE
+              </label>
+            </fieldset>
+          </div>
+          <div id="move-history"></div>
+          <div id="navigation">
+            <button id="prev-move" title="Previous Move">
+              <img
+                id="prev-move-icon"
+                src="./images/prev-move-arrow.svg"
+                alt="previous-move-arrow"
+              />
+            </button>
+            <button id="next-move" title="Next Move">
+              <img
+                id="next-move-icon"
+                src="./images/next-move-arrow.svg"
+                alt="next-move-arrow"
+              />
+            </button>
+          </div>
+          <div id="fen-import-container" style="display: none">
+            <textarea id="fen-input" placeholder="Enter FEN"></textarea>
+            <button id="submit-fen">Import FEN</button>
+          </div>
+          <div id="flip-fen-import">
+            <button id="flip-board">Flip Board</button>
+            <button id="import-from-fen">Import Game from FEN</button>
+            <button id="reset-board">Reset Board</button>
           </div>
         </div>
       </div>

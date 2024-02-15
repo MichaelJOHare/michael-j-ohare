@@ -13,6 +13,7 @@ class ChessBoardHighlighter {
 
     this.isBoardFlipped = false;
     this.squareSize = 0;
+    this.svgSquareSize = 0;
     this.kingCheckHighlightedSquare = null;
     this.listOfMovesToHighlight = [];
     this.highlightedSquares = [];
@@ -294,13 +295,13 @@ class ChessBoardHighlighter {
 
     row = this.getFlippedCoordinate(row);
     col = this.getFlippedCoordinate(col);
-    const x = (col + 0.5) * this.squareSize;
-    const y = (row + 0.5) * this.squareSize;
-    const lineWidth = this.squareSize / 14;
+    const x = (col + 0.5) * this.svgSquareSize;
+    const y = (row + 0.5) * this.svgSquareSize;
+    const lineWidth = this.svgSquareSize / 14;
 
     circle.setAttribute("cx", x);
     circle.setAttribute("cy", y);
-    circle.setAttribute("r", this.squareSize / 2.5);
+    circle.setAttribute("r", this.svgSquareSize / 2.5);
     circle.setAttribute("fill", "none");
     circle.setAttribute("stroke", "green");
     circle.setAttribute("stroke-width", lineWidth);
@@ -447,18 +448,18 @@ class ChessBoardHighlighter {
 
   createArrowComponents(originalSquare, currentSquare) {
     const ns = "http://www.w3.org/2000/svg";
-    const headLength = this.squareSize / 2;
-    const lineWidth = this.squareSize / 8;
+    const headLength = this.svgSquareSize / 2;
+    const lineWidth = this.svgSquareSize / 8;
     const opacity = 0.7;
     let visualOriginalRow = this.getFlippedCoordinate(originalSquare.row);
     let visualOriginalCol = this.getFlippedCoordinate(originalSquare.col);
     let visualCurrentRow = this.getFlippedCoordinate(currentSquare.row);
     let visualCurrentCol = this.getFlippedCoordinate(currentSquare.col);
 
-    const x1 = (visualOriginalCol + 0.5) * this.squareSize;
-    const y1 = (visualOriginalRow + 0.5) * this.squareSize;
-    const x2 = (visualCurrentCol + 0.5) * this.squareSize;
-    const y2 = (visualCurrentRow + 0.5) * this.squareSize;
+    const x1 = (visualOriginalCol + 0.5) * this.svgSquareSize;
+    const y1 = (visualOriginalRow + 0.5) * this.svgSquareSize;
+    const x2 = (visualCurrentCol + 0.5) * this.svgSquareSize;
+    const y2 = (visualCurrentRow + 0.5) * this.svgSquareSize;
 
     const angle = Math.atan2(y2 - y1, x2 - x1);
     const adjustedX2 = x2 - headLength * Math.cos(angle) * 0.85;
@@ -535,6 +536,10 @@ class ChessBoardHighlighter {
 
   updateSquareSize(squareSize) {
     this.squareSize = squareSize;
+  }
+
+  updateSVGSquareSize(squareSize) {
+    this.svgSquareSize = squareSize;
   }
 }
 

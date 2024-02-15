@@ -5,8 +5,6 @@ import ChessBoardHighlighter from "./ChessBoardHighlighter.js";
 import PromotionSelector from "./PromotionSelector.js";
 
 class ChessBoardPanel {
-  static GAME_WIDTH = 600;
-  static GAME_HEIGHT = 600;
   static DRAG_DELTA = 6;
   static LIGHT_SQUARE_COLOR = "rgb(248 240 198)";
   static DARK_SQUARE_COLOR = "rgb(156 98 69)";
@@ -36,6 +34,7 @@ class ChessBoardPanel {
 
     this.isBoardFlipped = false;
     this.squareSize = 0;
+    this.svgSquareSize = 0;
     this.setScreen = this.setScreen.bind(this);
 
     this.boardHighlighter = new ChessBoardHighlighter(
@@ -248,6 +247,7 @@ class ChessBoardPanel {
     this.offscreenCanvas.style.height = size + "px";
 
     this.squareSize = (size * dpi) / 8;
+    this.svgSquareSize = size / 8;
 
     this.updateSquareSize();
     this.reorderSidebarBasedOnScreenWidth();
@@ -408,6 +408,7 @@ class ChessBoardPanel {
     this.squareSize = this.canvas.width / 8;
     if (this.boardHighlighter) {
       this.boardHighlighter.updateSquareSize(this.squareSize);
+      this.boardHighlighter.updateSVGSquareSize(this.svgSquareSize);
     }
     if (this.eventHandlers) {
       this.eventHandlers.updateSquareSize(this.squareSize);

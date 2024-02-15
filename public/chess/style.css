@@ -256,17 +256,32 @@ html[data-theme="dark"] .black-piece {
   }
 
   .chessboard-wrapper {
+    width: 95vmin;
     margin-left: 0;
     padding: 10px;
     order: 1;
   }
 
+  #chessboard-container {
+    height: 90vmin;
+    width: 90vmin;
+  }
+
   #sidebar {
     order: 2;
-    width: 70vmin;
+    width: 90vmin;
     height: fit-content;
     max-width: none;
     margin: 0;
+  }
+
+  #stockfish-analysis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #stockfish-analysis-title {
+    justify-self: flex-end;
   }
 
   #flip-fen-import {
@@ -285,6 +300,7 @@ html[data-theme="dark"] .black-piece {
   }
 
   #text-areas-container {
+    width: 90vmin;
     margin-top: 0;
   }
 
