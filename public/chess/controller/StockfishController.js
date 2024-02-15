@@ -36,8 +36,6 @@ class StockfishController {
   }
 
   handleStockfishMessage(event) {
-    console.log("Stockfish says: ", event.data);
-
     if (event.data.startsWith("info depth")) {
       const depth = parseInt(event.data.split(" ")[2]);
       const currentTime = Date.now();
