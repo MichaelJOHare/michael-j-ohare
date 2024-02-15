@@ -121,11 +121,11 @@ header hgroup {
 }
 
 #stockfish-analysis {
-  display: flex;
+  display: grid;
 }
 
 #stockfish-analysis-title {
-  margin-right: 10px;
+  text-align: center;
 }
 
 #move-history {
@@ -276,12 +276,25 @@ html[data-theme="dark"] .black-piece {
   }
 
   #stockfish-analysis {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr) 0fr;
+    grid-template-rows: 2fr 1fr;
   }
 
   #stockfish-analysis-title {
+    grid-area: 1 / 1 / 2 / 3;
     justify-self: flex-end;
+    align-self: center;
+    margin-right: 10px;
+  }
+
+  #stockfish-analysis-toggle {
+    grid-area: 1 / 3 / 2 / 5;
+    align-self: center;
+  }
+
+  #sf-comment {
+    grid-area: 2 / 1 / 3 / 5;
+    text-align: center;
   }
 
   #flip-fen-import {
@@ -289,7 +302,7 @@ html[data-theme="dark"] .black-piece {
   }
 
   #move-history {
-    min-height: 150px;
+    min-height: 250px;
     width: 100%;
   }
 
@@ -317,5 +330,11 @@ html[data-theme="dark"] .black-piece {
   #pgn-title {
     order: -1;
     margin: 0;
+  }
+}
+
+@media (max-width: 500px) {
+  #stockfish-analysis {
+    grid-template-rows: 1fr 1fr;
   }
 }

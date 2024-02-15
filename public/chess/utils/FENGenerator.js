@@ -53,53 +53,44 @@ export default class FENGenerator {
 
 function generateCastlingAvailability(board) {
   let castlingAvailability = "";
-  const chessBoard = board.getBoard();
 
-  const whiteKing =
-    chessBoard[ChessBoard.WHITE_MAJOR_PIECE_ROW][ChessBoard.KING_COLUMN];
-  if (whiteKing && whiteKing.getType() === "KING" && !whiteKing.hasMoved) {
-    const whiteKingRook =
-      chessBoard[ChessBoard.WHITE_MAJOR_PIECE_ROW][ChessBoard.ROOK_COLUMN_1];
-    const whiteQueenRook =
-      chessBoard[ChessBoard.WHITE_MAJOR_PIECE_ROW][ChessBoard.ROOK_COLUMN_2];
-    if (
-      whiteKingRook &&
-      whiteKingRook.getType() === "ROOK" &&
-      !whiteKingRook.hasMoved
-    ) {
-      castlingAvailability += "K";
-    }
-    if (
-      whiteQueenRook &&
-      whiteQueenRook.getType() === "ROOK" &&
-      !whiteQueenRook.hasMoved
-    ) {
-      castlingAvailability += "Q";
+  function checkSide(
+    majorPieceRow,
+    queenSideRookColumn,
+    kingSideRookColumn,
+    isWhite
+  ) {
+    const king = board.getBoard()[majorPieceRow][ChessBoard.KING_COLUMN];
+    if (king && king.getType() === "KING" && !king.hasMoved) {
+      const rookPositions = [kingSideRookColumn, queenSideRookColumn];
+      for (let position of rookPositions) {
+        const rook = board.getBoard()[majorPieceRow][position];
+        if (rook && rook.getType() === "ROOK" && !rook.hasMoved) {
+          castlingAvailability += isWhite
+            ? position === kingSideRookColumn
+              ? "K"
+              : "Q"
+            : position === kingSideRookColumn
+            ? "k"
+            : "q";
+        }
+      }
     }
   }
 
-  const blackKing =
-    chessBoard[ChessBoard.BLACK_MAJOR_PIECE_ROW][ChessBoard.KING_COLUMN];
-  if (blackKing && blackKing.getType() === "KING" && !blackKing.hasMoved) {
-    const blackKingRook =
-      chessBoard[ChessBoard.BLACK_MAJOR_PIECE_ROW][ChessBoard.ROOK_COLUMN_1];
-    const blackQueenRook =
-      chessBoard[ChessBoard.BLACK_MAJOR_PIECE_ROW][ChessBoard.ROOK_COLUMN_2];
-    if (
-      blackKingRook &&
-      blackKingRook.getType() === "ROOK" &&
-      !blackKingRook.hasMoved
-    ) {
-      castlingAvailability += "k";
-    }
-    if (
-      blackQueenRook &&
-      blackQueenRook.getType() === "ROOK" &&
-      !blackQueenRook.hasMoved
-    ) {
-      castlingAvailability += "q";
-    }
-  }
+  checkSide(
+    ChessBoard.WHITE_MAJOR_PIECE_ROW,
+    ChessBoard.ROOK_COLUMN_1,
+    ChessBoard.ROOK_COLUMN_2,
+    true
+  );
+
+  checkSide(
+    ChessBoard.BLACK_MAJOR_PIECE_ROW,
+    ChessBoard.ROOK_COLUMN_1,
+    ChessBoard.ROOK_COLUMN_2,
+    false
+  );
 
   return castlingAvailability || "-";
 }

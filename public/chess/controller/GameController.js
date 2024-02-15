@@ -159,7 +159,6 @@ class GameController {
 
   requestStockfishAnalysis() {
     if (this.sfController.isAnalysisEnabled) {
-      this.sfController.clearBestMoveArrow();
       this.sfController.requestAnalysisIfNeeded();
     }
   }
