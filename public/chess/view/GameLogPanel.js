@@ -1,4 +1,4 @@
-import Pawn from "../model/pieces/Pawn.js";
+import PieceType from "../model/pieces/PieceType.js";
 import PlayerColor from "../model/player/PlayerColor.js";
 import CastlingMove from "../model/moves/CastlingMove.js";
 import PromotionMove from "../model/moves/PromotionMove.js";
@@ -41,11 +41,19 @@ class GameLogPanel {
         currentMoveDiv.appendChild(moveNumberSpan);
       }
 
+      // check if pawn so CSS color isn't applied to start square
+      let pieceColor = move.piece.getPlayer().getColor();
+      let pieceType = move.piece.getType();
       let pieceSpan = `<span class="${
-        move.piece.getPlayer().getColor() === PlayerColor.WHITE
+        pieceType === PieceType.PAWN
+          ? pieceColor === PlayerColor.WHITE
+            ? "white-pawn"
+            : "black-pawn"
+          : pieceColor === PlayerColor.WHITE
           ? "white-piece"
           : "black-piece"
       }">${pieceSymbol}</span>`;
+
       let moveSpan = document.createElement("span");
       moveSpan.className = "move-history-entry";
       moveSpan.id = moveId;
@@ -90,7 +98,7 @@ class GameLogPanel {
       return { pieceSymbol, notation };
     }
 
-    if (!(movingPiece instanceof Pawn)) {
+    if (!(movingPiece.getType() === PieceType.PAWN)) {
       pieceSymbol = movingPiece.getChessPieceSymbol();
     } else if (move.isCapture) {
       pieceSymbol = move.startSquare.toString().substring(0, 1);

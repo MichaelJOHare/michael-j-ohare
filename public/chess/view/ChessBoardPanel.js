@@ -160,11 +160,7 @@ class ChessBoardPanel {
 
   showPromotionSelector(move, callback) {
     this.clearPreviousMoveHighlights();
-    this.promotionSelector.createPromotionSelector(
-      move,
-      callback,
-      this.squareSize
-    );
+    this.promotionSelector.createPromotionSelector(move, callback);
   }
 
   drawHighlightedSquares(moves) {
@@ -426,10 +422,10 @@ class ChessBoardPanel {
       this.boardHighlighter.updateSVGSquareSize(this.svgSquareSize);
     }
     if (this.eventHandlers) {
-      this.eventHandlers.updateSquareSize(this.squareSize);
+      this.eventHandlers.updateSquareSize(this.squareSize, this.svgSquareSize);
     }
     if (this.promotionSelector) {
-      this.promotionSelector.updateSquareSize(this.squareSize);
+      this.promotionSelector.updateUnscaledSquareSize(this.svgSquareSize);
     }
     this.drawBoard();
   }

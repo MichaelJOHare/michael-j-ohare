@@ -24,6 +24,7 @@ class EventHandlers {
 
     this.isBoardFlipped = false;
     this.squareSize = 0;
+    this.unscaledSquareSize = 0;
     this.dragInitiated = false;
     this.isDragging = false;
     this.isDrawing = false;
@@ -66,10 +67,10 @@ class EventHandlers {
         this.offsetX = event.clientX - rect.left;
         this.offsetY = event.clientY - rect.top;
 
-        this.draggingDiv.innerHTML = `<img src="${image.src}" width="${this.squareSize}" height="${this.squareSize}">`;
+        this.draggingDiv.innerHTML = `<img src="${image.src}" width="${this.unscaledSquareSize}" height="${this.unscaledSquareSize}">`;
         this.draggingDiv.style.transform = `translate(${
-          this.offsetX - this.squareSize / 2
-        }px, ${this.offsetY - this.squareSize / 2}px)`;
+          this.offsetX - this.unscaledSquareSize / 2
+        }px, ${this.offsetY - this.unscaledSquareSize / 2}px)`;
         this.draggingDiv.style.visibility = "visible";
 
         this.draggingPiece = piece;
@@ -97,8 +98,8 @@ class EventHandlers {
         const moveY = event.clientY - this.startY;
 
         this.draggingDiv.style.transform = `translate(${
-          this.offsetX + moveX - this.squareSize / 2
-        }px, ${this.offsetY + moveY - this.squareSize / 2}px)`;
+          this.offsetX + moveX - this.unscaledSquareSize / 2
+        }px, ${this.offsetY + moveY - this.unscaledSquareSize / 2}px)`;
 
         const diffX = Math.abs(event.clientX - this.startX);
         const diffY = Math.abs(event.clientY - this.startY);
@@ -259,8 +260,9 @@ class EventHandlers {
     return { row, col };
   }
 
-  updateSquareSize(squareSize) {
+  updateSquareSize(squareSize, unscaledSquareSize) {
     this.squareSize = squareSize;
+    this.unscaledSquareSize = unscaledSquareSize;
   }
 }
 

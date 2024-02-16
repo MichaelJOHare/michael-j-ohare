@@ -5,13 +5,13 @@ class PromotionSelector {
     this.imageLoader = imageLoader;
     this.isBoardFlipped = false;
     this.isReversed = false;
-    this.squareSize = 0;
+    this.unscaledSquareSize = 0;
 
     this.activePromotionSelector = null;
     this.boardOverlay = null;
   }
 
-  createPromotionSelector(move, callback, squareSize) {
+  createPromotionSelector(move, callback) {
     let promotionPieces = ["Queen", "Rook", "Bishop", "Knight"];
     const color = move.piece.getPlayer().getColor().toLowerCase();
     const colorCapitalized = color.charAt(0).toUpperCase() + color.slice(1);
@@ -34,7 +34,7 @@ class PromotionSelector {
       promotionPieces.reverse();
     }
 
-    this.setSelectorPositionAndSize(selector, move, this.squareSize);
+    this.setSelectorPositionAndSize(selector, move, this.unscaledSquareSize);
     selector.style.zIndex = "3";
     selector.style.padding = "0";
     selector.style.margin = "0";
@@ -70,7 +70,7 @@ class PromotionSelector {
         const img = document.createElement("img");
         img.src = image.src;
         img.style.width = "100%";
-        img.style.height = `${squareSize}px`;
+        img.style.height = `${this.unscaledSquareSize}px`;
         img.style.padding = "0";
         img.style.margin = "0";
         img.style.display = "block";
@@ -82,19 +82,19 @@ class PromotionSelector {
     this.boardContainer.appendChild(selector);
   }
 
-  updateSelectorPositionAndSize() {
-    const { selector, move } = this.activePromotionSelector;
-    this.setSelectorPositionAndSize(selector, move, this.squareSize);
-
-    Array.from(selector.children).forEach((img) => {
-      img.style.height = `${this.squareSize}px`;
-    });
-  }
-
   updatePromotionSelector() {
     if (this.activePromotionSelector) {
       this.updateSelectorPositionAndSize();
     }
+  }
+
+  updateSelectorPositionAndSize() {
+    const { selector, move } = this.activePromotionSelector;
+    this.setSelectorPositionAndSize(selector, move, this.unscaledSquareSize);
+
+    Array.from(selector.children).forEach((img) => {
+      img.style.height = `${this.unscaledSquareSize}px`;
+    });
   }
 
   flipPromotionSelector() {
@@ -182,8 +182,8 @@ class PromotionSelector {
     this.drawBoard();
   }
 
-  updateSquareSize(squareSize) {
-    this.squareSize = squareSize;
+  updateUnscaledSquareSize(unscaledSquareSize) {
+    this.unscaledSquareSize = unscaledSquareSize;
   }
 }
 

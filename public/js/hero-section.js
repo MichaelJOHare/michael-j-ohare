@@ -24,7 +24,7 @@ class HeroSection extends HTMLElement {
           <li>
             <details class="dropdown">
               <summary role="button" class="outline contrast">
-                Past Side Projects
+                Side Projects
               </summary>
               <ul dir="rtl">
                 <li><a href="/chess/">Play Chess (ft. Stockfish)</a></li>
