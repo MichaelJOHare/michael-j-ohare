@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="189.0044 153.6374 33.8183 33.675" xmlns="http://www.w3.org/2000/svg" width="45" height="45">
+  <defs>
+    <clipPath id="clip-0">
+      <rect x="22.424" y="2.925" width="48.801" height="42.995" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    </clipPath>
+    <clipPath id="clip-1">
+      <rect x="-9.072" y="-13.326" width="31.566" height="76.92" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    </clipPath>
+  </defs>
+  <g style="fill: none; fill-rule: evenodd; stroke: rgb(0, 0, 0); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; clip-path: url('#clip-0');" transform="matrix(1, 0, 0, 1, 182.92604064941406, 147.63743591308594)">
+    <path d="m22.5 11.63v-5.63" fill="none" stroke="#000" stroke-linejoin="miter"/>
+    <path d="m22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5" fill="#000" stroke-linecap="butt" stroke-linejoin="miter"/>
+    <path d="M 12.5 37 C 18 40.5 27.297 40.599 32.797 37.099 L 33.73 30.286 C 33.73 30.286 42.257 25.325 39.257 19.325 C 35.257 12.825 25 16 22.5 23.5 L 22.5 27 L 22.5 23.5 C 20 16 10.5 13 6.5 19.5 C 3.5 25.5 12.5 30 12.5 30 L 12.5 37 Z" fill="#000" stroke="#000"/>
+    <g fill="none">
+      <path d="m20 8h5" stroke="#000" stroke-linejoin="miter"/>
+      <path d="M 32.614 30.026 C 32.614 30.026 40.5 25.5 38.03 19.85 C 34.15 14 25 18 22.5 24.5 L 22.5 26.6 L 22.5 24.5 C 20 18 10.85 14 6.97 19.85 C 4.5 25.5 13 29.5 13 29.5" stroke="#fff"/>
+      <path d="m12.5 30c5.5-3 14.5-3 20 0m-20 3.5c5.5-3 14.5-3 20 0m-20 3.5c5.5-3 14.5-3 20 0" stroke="#fff"/>
+    </g>
+  </g>
+  <g fill="none" fill-rule="evenodd" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" transform="matrix(1, 0, 0, 1, 182.9514617919922, 147.65579223632812)" style="clip-path: url('#clip-1');">
+    <path stroke-linejoin="miter" d="M22.5 11.63V6M20 8h5"/>
+    <path fill="#fff" stroke-linecap="butt" stroke-linejoin="miter" d="M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5"/>
+    <path fill="#fff" d="M 12.5 37 C 18 40.5 27 40.5 32.5 37 L 32.5 30 C 32.5 30 41.5 25.5 38.5 19.5 C 34.5 13 25 16 22.5 23.5 L 22.5 27 L 22.5 23.5 C 20 16 10.675 13.414 6.675 19.914 C 3.675 25.914 12.5 30 12.5 30 L 12.5 37"/>
+    <path d="M12.5 30c5.5-3 14.5-3 20 0m-20 3.5c5.5-3 14.5-3 20 0m-20 3.5c5.5-3 14.5-3 20 0"/>
+  </g>
+</svg>

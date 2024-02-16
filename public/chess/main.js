@@ -4,8 +4,8 @@ const gameController = new GameController();
 
 /*
 TO DO
- - Fix stockfish best move arrow drawn after moving during analysis
-        -Fix king check highlight after promotion after reset game ??
+ - Implement captured pieces/material advantage
+ - Fix king check highlight after promotion after reset game ??
 
  - Make drawing arrow/circle over pre-existing arrow/circle remove it.
 
@@ -13,5 +13,8 @@ TO DO
      -Thought it was a good idea, not liking it now.  Maybe keep setters?  They make sense in my brain
  - Make move piece with click a smooth glide to location
       - Add sounds
- - Implement play vs stockfish and PGN box
+ - Implement play vs stockfish.  Modal, if play vs -> select ELO or skill level.  Remove import from FEN/SF analysis
+        - If player selects black, auto flip board
+ 
+ - Implement PGN box
 */

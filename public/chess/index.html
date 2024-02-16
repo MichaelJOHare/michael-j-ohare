@@ -27,6 +27,39 @@
   </head>
   <body>
     <hero-section></hero-section>
+    <!--add open after class="modal" to display on page load-->
+    <dialog id="modal" class="modal">
+      <article class="modal-content">
+        <h2>Choose Your Mode</h2>
+        <button id="analysisMode">Analysis</button>
+        <button id="vsComputerMode">Play vs Computer</button>
+
+        <div id="strengthLevelOptions" style="display: none">
+          <h3>Strength Level</h3>
+          <div>
+            <button class="strength-level" data-level="1">1</button>
+          </div>
+        </div>
+
+        <div id="colorSelection" style="display: none">
+          <h3>Choose Color</h3>
+          <button class="color-choice" data-color="white">
+            <img src="images/white-king.svg" alt="Play as White" />
+          </button>
+          <button class="color-choice" data-color="black">
+            <img src="images/Black_King.svg" alt="Play as Black" />
+          </button>
+          <button class="color-choice" data-color="random">
+            <img src="images/Random-king.svg" alt="Play as Random" />
+          </button>
+        </div>
+
+        <button id="playButton" style="display: none">Play</button>
+        <button onclick="document.getElementById('modal').close()">
+          Close
+        </button>
+      </article>
+    </dialog>
     <div id="outer-container">
       <div id="game-container">
         <div class="chessboard-wrapper">
@@ -84,7 +117,7 @@
               </label>
             </fieldset>
             <p id="sf-comment">
-              Use Stockfish Classical with slower internet and/or computers.
+              Use Stockfish Classical with slower internet/computers.
             </p>
           </div>
           <div id="move-history"></div>
