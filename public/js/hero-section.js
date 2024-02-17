@@ -8,7 +8,7 @@ class HeroSection extends HTMLElement {
             <a href="/" class="contrast"><strong>Home</strong></a>
           </li>
         </ul>
-        <ul>
+        <ul style="padding-top: 10px">
           <li>
             <details class="dropdown">
               <summary role="button" class="outline contrast">

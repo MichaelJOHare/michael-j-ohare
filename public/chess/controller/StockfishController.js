@@ -1,12 +1,27 @@
 import FENGenerator from "../utils/FENGenerator.js";
 import Debouncer from "../utils/Debouncer.js";
+import Move from "../model/moves/Move.js";
+import Square from "../model/board/Square.js";
 
 class StockfishController {
-  constructor(board, move, gameState, gui) {
+  static ENGINE_SETTINGS = [
+    { skill: -9, depth: 5, moveTime: 50 },
+    { skill: -5, depth: 5, moveTime: 100 },
+    { skill: -1, depth: 5, moveTime: 150 },
+    { skill: 3, depth: 5, moveTime: 200 },
+    { skill: 7, depth: 5, moveTime: 300 },
+    { skill: 11, depth: 8, moveTime: 400 },
+    { skill: 16, depth: 13, moveTime: 500 },
+    { skill: 20, depth: 22, moveTime: 1000 },
+  ];
+  static DEFAULT_DEPTH = 24;
+
+  constructor(board, move, gameState, gui, strengthLevel) {
     this.board = board;
     this.move = move;
     this.gameState = gameState;
     this.gui = gui;
+    this.strengthLevel = strengthLevel;
 
     this.debouncer = new Debouncer(300);
     this.isContinuousAnalysisEnabled = false;
@@ -19,21 +34,55 @@ class StockfishController {
     this.depthInterval = 5;
 
     this.positionHash;
-    this.bestMove;
+    this.bestMove = null;
   }
 
-  initEngine() {
+  initEngine(isPlaying) {
     this.sendCommand("uci");
+    if (isPlaying) {
+      const skill = this.getEngineSettings().skill;
+      this.sendCommand(`setoption name Skill Level value ${skill}`);
+      this.sendCommand("ucinewgame");
+      this.sendCommand("isready");
+    }
   }
 
   sendCommand(command) {
+    console.log(command);
     this.lastCommand = command;
     this.stockfish.postMessage(command);
   }
 
+  getMove(fen) {
+    this.sendCommand(`position fen ${fen}`);
+    this.sendCommand(`go depth ${StockfishController.DEFAULT_DEPTH}`);
+  }
+
+  getStockfishAsOpponentMove() {
+    return new Promise((resolve) => {
+      this.ensureEngineInitialized();
+
+      const { depth, moveTime } = this.getEngineSettings();
+      const fen = this.calculatePositionHash();
+      this.sendCommand(`position fen ${fen}`);
+      this.sendCommand(`go depth ${depth} movetime ${moveTime}`);
+
+      const handleBestMove = (event) => {
+        if (event.data.startsWith("bestmove")) {
+          const bestMoveStr = event.data.split(" ")[1];
+          this.stockfish.removeEventListener("message", handleBestMove);
+          const move = this.processBestMove(bestMoveStr);
+          resolve(move);
+        }
+      };
+
+      this.stockfish.addEventListener("message", handleBestMove);
+    });
+  }
+
   handleStockfishMessage(event) {
-    console.log("Stockfish says: ", event.data);
-    if (event.data.startsWith("info depth")) {
+    console.log(event.data);
+    if (event.data.startsWith("info depth") && this.strengthLevel === 0) {
       const depth = parseInt(event.data.split(" ")[2]);
       const currentTime = Date.now();
       if (
@@ -51,14 +100,26 @@ class StockfishController {
     }
 
     if (event.data.startsWith("bestmove")) {
-      if (this.lastCommand !== "stop") {
-        const bestMove = event.data.split(" ")[1];
-        this.bestMove = bestMove;
-        this.addBestMoveAnalysisArrow(bestMove);
-        this.lastDepthUpdated = 0;
-        this.lastArrowUpdate = Date.now();
+      const bestMove = event.data.split(" ")[1];
+      if (this.strengthLevel > 0 || this.strengthLevel < 0) {
+        this.processBestMove(bestMove);
+      } else if (this.strengthLevel === 0) {
+        if (this.lastCommand !== "stop") {
+          this.bestMove = bestMove;
+          this.addBestMoveAnalysisArrow(bestMove);
+          this.lastDepthUpdated = 0;
+          this.lastArrowUpdate = Date.now();
+        }
       }
     }
+  }
+
+  onReady() {
+    // Handle ready state
+  }
+
+  onBestMove(data) {
+    // Process best move here
   }
 
   toggleContinuousAnalysis(enable) {
@@ -88,11 +149,6 @@ class StockfishController {
     }
   }
 
-  getMove(fen) {
-    this.sendCommand(`position fen ${fen}`);
-    this.sendCommand("go depth 20");
-  }
-
   requestAnalysisIfNeeded() {
     const newPositionHash = this.calculatePositionHash();
     if (
@@ -107,6 +163,27 @@ class StockfishController {
     } else if (this.bestMove) {
       this.addBestMoveAnalysisArrow(this.bestMove);
     }
+  }
+
+  processBestMove(bestMoveStr) {
+    const fromNotation = bestMoveStr.substring(0, 2);
+    const toNotation = bestMoveStr.substring(2, 4);
+
+    const fromRowCol = this.convertNotationToSquare(fromNotation);
+    const fromSquare = new Square(fromRowCol.row, fromRowCol.col);
+    const toRowCol = this.convertNotationToSquare(toNotation);
+    const toSquare = new Square(toRowCol.row, toRowCol.col);
+
+    const movingPiece = this.board.getPieceAt(fromRowCol.row, fromRowCol.col);
+    const capturedPiece = this.board.getPieceAt(toRowCol.row, toRowCol.col);
+
+    return new Move(
+      movingPiece,
+      fromSquare,
+      toSquare,
+      capturedPiece,
+      this.board
+    );
   }
 
   updateTemporaryAnalysisArrow(moveData) {
@@ -151,12 +228,35 @@ class StockfishController {
     if (!this.stockfish) {
       this.stockfish = new Worker("/chess/stockfish/stockfish-nnue-16.js");
       this.stockfish.onmessage = this.handleStockfishMessage.bind(this);
-      this.initEngine();
+      if (this.strengthLevel === 0) {
+        this.initEngine(false);
+      } else {
+        this.initEngine(true);
+      }
     }
   }
 
+  getEngineSettings() {
+    return StockfishController.ENGINE_SETTINGS[
+      Math.max(
+        0,
+        Math.min(
+          this.strengthLevel - 1,
+          StockfishController.ENGINE_SETTINGS.length - 1
+        )
+      )
+    ];
+  }
+
   cleanUp() {
-    this.sendCommand("stop");
+    if (this.stockfish) {
+      this.stockfish.removeEventListener(
+        "message",
+        this.handleStockfishMessage
+      );
+      // Add any other removeEventListener calls as needed
+    }
+    this.stockfish = null;
     this.gui.clearBestMoveArrow();
   }
 }

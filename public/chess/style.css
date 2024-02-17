@@ -27,10 +27,47 @@ header hgroup {
   margin-bottom: var(--pico-spacing-company);
 }
 
+.hidden {
+  display: none;
+}
+
 #modal-content {
   display: grid;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+#modal-content > h2,
+h3 {
+  text-align: center;
+}
+
+#modal-content > button {
+  margin: 10px;
+}
+
+#strength-level-buttons {
+  display: flex;
+  width: 100%;
+  flex-wrap: nowrap;
+  margin-bottom: 10px;
+}
+
+#color-selection {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-choices-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.color-choice {
+  margin: 0 10px;
 }
 
 #outer-container {

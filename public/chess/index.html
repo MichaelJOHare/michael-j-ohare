@@ -27,37 +27,31 @@
   </head>
   <body>
     <hero-section></hero-section>
-    <!--add open after class="modal" to display on page load-->
-    <dialog id="modal" class="modal">
-      <article class="modal-content">
+    <dialog id="modal">
+      <article id="modal-content">
         <h2>Choose Your Mode</h2>
-        <button id="analysisMode">Analysis</button>
-        <button id="vsComputerMode">Play vs Computer</button>
-
-        <div id="strengthLevelOptions" style="display: none">
+        <button id="analysis-mode">Analysis</button>
+        <button id="vs-computer-mode">Play vs Computer</button>
+        <div id="strength-level-options" class="hidden">
           <h3>Strength Level</h3>
-          <div>
-            <button class="strength-level" data-level="1">1</button>
+          <div id="strength-level-buttons"></div>
+        </div>
+        <div id="color-selection" class="hidden">
+          <h3>Choose Color</h3>
+          <div class="color-choices-container">
+            <button class="color-choice" data-color="white">
+              <img src="images/White_King.svg" alt="Play as White" />
+            </button>
+            <button class="color-choice" data-color="black">
+              <img src="images/Black_King.svg" alt="Play as Black" />
+            </button>
+            <button class="color-choice" data-color="random">
+              <img src="images/Random-king.svg" alt="Play as Random" />
+            </button>
           </div>
         </div>
-
-        <div id="colorSelection" style="display: none">
-          <h3>Choose Color</h3>
-          <button class="color-choice" data-color="white">
-            <img src="images/white-king.svg" alt="Play as White" />
-          </button>
-          <button class="color-choice" data-color="black">
-            <img src="images/Black_King.svg" alt="Play as Black" />
-          </button>
-          <button class="color-choice" data-color="random">
-            <img src="images/Random-king.svg" alt="Play as Random" />
-          </button>
-        </div>
-
-        <button id="playButton" style="display: none">Play</button>
-        <button onclick="document.getElementById('modal').close()">
-          Close
-        </button>
+        <button id="play-button">Play</button>
+        <button id="close-button">Close</button>
       </article>
     </dialog>
     <div id="outer-container">
@@ -144,7 +138,7 @@
           <div id="flip-fen-import">
             <button id="flip-board">Flip Board</button>
             <button id="import-from-fen">Import Game from FEN</button>
-            <button id="reset-board">Reset Board</button>
+            <button id="reset-board">Reset Game</button>
           </div>
         </div>
       </div>

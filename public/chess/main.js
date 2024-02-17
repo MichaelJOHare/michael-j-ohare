@@ -1,11 +1,18 @@
-import GameController from "./controller/GameController.js";
+import PlayOrAnalysisModal from "./view/setup/PlayOrAnalysisModal.js";
 
-const gameController = new GameController();
+const playOrAnalysisModal = new PlayOrAnalysisModal();
 
 /*
 TO DO
+ - FIX commands sent to stockfish before readyok is received (getStockfishAsOpponentMove)
+        --Implement stockfish castling
+ - Add current selection highlight to modal!!!
  - Implement captured pieces/material advantage
  - Fix king check highlight after promotion after reset game ??
+    - Fix king check highlight after stockfish move
+
+ - Show current depth/sf advantage in analysis mode
+ - Refactor/clean up SFController, kind of hacky right now
 
  - Make drawing arrow/circle over pre-existing arrow/circle remove it.
 

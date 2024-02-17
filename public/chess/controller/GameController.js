@@ -7,9 +7,15 @@ import FENGenerator from "../utils/FENGenerator.js";
 import StockfishController from "./StockfishController.js";
 
 class GameController {
-  constructor() {
+  constructor(player1, player2, stockfishStrengthLevel) {
+    this.player1 = player1;
+    this.player2 = player2;
+    this.stockfishStrengthLevel = stockfishStrengthLevel;
+  }
+
+  init() {
     this.board = new ChessBoard();
-    this.gs = new GameState(this.board);
+    this.gs = new GameState(this.board, this.player1, this.player2);
     this.pm = this.board.getPieceManager();
     this.mementos = [];
     this.move = new MoveHistory();
@@ -27,16 +33,17 @@ class GameController {
       this.board,
       this.move,
       this.gs,
-      this.guiController
+      this.guiController,
+      this.stockfishStrengthLevel
     );
 
     this.initiateGame();
   }
 
   initiateGame() {
-    /*     if (this.gs.getCurrentPlayer().isStockfish()) {
+    if (this.gs.getCurrentPlayer().isStockfish()) {
       this.makeStockfishMove();
-    } */
+    }
     this.guiController.writeCurrentFENString();
   }
 
@@ -77,17 +84,18 @@ class GameController {
       return;
     }
 
-    if (this.mh.isFirstClick) {
+    if (this.mh.isFirstClick && !this.gs.getCurrentPlayer().isStockfish()) {
       this.mh.handleSelectPieceClick(row, col);
-    } else {
-      //maybe return true if legal move -> request analysis so unneccessary calls are limited
+    } else if (
+      !this.mh.isFirstClick &&
+      !this.gs.getCurrentPlayer().isStockfish()
+    ) {
       this.mh.handleMovePieceClick(row, col);
       this.requestStockfishAnalysis();
     }
 
     if (this.gs.getCurrentPlayer().isStockfish()) {
       this.makeStockfishMove();
-      this.requestStockfishAnalysis();
     }
 
     if (this.gs.isGameOver) {
@@ -104,18 +112,15 @@ class GameController {
   }
 
   handleDragDrop(endRow, endCol) {
-    //maybe return true if legal move -> request analysis so unneccessary calls are limited
     this.mh.handleDragDrop(endRow, endCol);
-
-    if (this.gs.getCurrentPlayer().isStockfish()) {
-      this.makeStockfishMove();
-    }
-
-    this.requestStockfishAnalysis();
 
     if (this.gs.isGameOver) {
       this.sfController.cleanUp();
     }
+
+    this.gs.getCurrentPlayer().isStockfish()
+      ? this.makeStockfishMove()
+      : this.requestStockfishAnalysis();
   }
 
   handlePreviousMoveButtonClick() {
@@ -155,11 +160,17 @@ class GameController {
     this.sfController.toggleClassicalContinuousAnalysis(enabled);
   }
 
-  /*
   makeStockfishMove() {
-    this.sfController.makeMove();
+    this.sfController
+      .getStockfishAsOpponentMove()
+      .then((stockfishMove) => {
+        this.mh.finalizeMove(stockfishMove);
+        this.guiController.updateGUI();
+      })
+      .catch((error) => {
+        console.error("Error getting Stockfish move:", error);
+      });
   }
-  */
 
   requestStockfishAnalysis() {
     if (
@@ -171,6 +182,9 @@ class GameController {
   }
 
   handleResetBoard() {
+    // Maybe attach this event listener in analysis modal, gotta check if everything will be
+    //      eligible for garbage collection if new GameController is made
+    this.sfController.cleanUp();
     this.guiController.clearHighlightedSquares();
     this.gs.init();
     this.board.init(this.gs.getPlayer1(), this.gs.getPlayer2());

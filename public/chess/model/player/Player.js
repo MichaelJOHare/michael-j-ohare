@@ -4,16 +4,10 @@ import PlayerColor from "./PlayerColor.js";
 class Player {
   #color;
   #type;
-  #name;
 
-  constructor(color, type, name) {
+  constructor(color, type) {
     this.#color = color;
     this.#type = type;
-    this.#name = name;
-  }
-
-  getName() {
-    return this.#name;
   }
 
   getColor() {
@@ -29,7 +23,7 @@ class Player {
   }
 
   copy() {
-    return new Player(this.#color, this.#type, this.#name);
+    return new Player(this.#color, this.#type);
   }
 
   equals(obj) {
@@ -44,15 +38,11 @@ class Player {
       return false;
     }
     const player = obj;
-    return (
-      this.#color === player.#color &&
-      this.#type === player.#type &&
-      this.#name === player.#name
-    );
+    return this.#color === player.#color && this.#type === player.#type;
   }
 
   hashCode() {
-    return this.#color + this.#type + this.#name;
+    return this.#color + this.#type;
   }
 }
 

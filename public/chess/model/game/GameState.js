@@ -1,29 +1,19 @@
-import Player from "../player/Player.js";
 import PlayerColor from "../player/PlayerColor.js";
 import PlayerType from "../player/PlayerType.js";
 import GameStateMemento from "./GameStateMemento.js";
 
 class GameState {
-  constructor(board) {
+  constructor(board, player1, player2) {
     this.board = board;
-    this.initializePlayers();
+
+    this.player1 = player1;
+    this.player2 = player2;
+
     this.init();
+
     this.isGameOver = false;
     this.isBoardLocked = false;
     this.stockfishElo = -1;
-  }
-
-  initializePlayers() {
-    //const setup = GameSetup.getPlayerSetup();
-
-    this.player1 = new Player(PlayerColor.WHITE, PlayerType.HUMAN, "White"); //setup.getPlayer1();
-    this.player2 = new Player(PlayerColor.BLACK, PlayerType.HUMAN, "Black"); //setup.getPlayer2();
-
-    /*
-    if (setup.isStockfishInPlay()) {
-      this.stockfishElo = setup.getElo();
-    }
-    */
   }
 
   init() {
@@ -106,7 +96,7 @@ class GameState {
   }
 
   isStockfish() {
-    return this.currentPlayer.PlayerType === PlayerType.AI;
+    return this.currentPlayer.isStockfish();
   }
 
   getStockfishElo() {

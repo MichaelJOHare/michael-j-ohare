@@ -231,11 +231,7 @@ class MoveHandler {
   }
 
   handleUndoMove() {
-    const undoCount =
-      this.gs.getCurrentPlayer() === this.gs.getPlayer1() &&
-      this.gs.getPlayer2().isStockfish()
-        ? 2
-        : 1;
+    const undoCount = this.gs.getOpposingPlayer().isStockfish() ? 2 : 1;
 
     for (let i = 0; i < undoCount; i++) {
       if (this.mementos.length < 1) {
@@ -261,11 +257,7 @@ class MoveHandler {
   }
 
   handleRedoMove() {
-    const redoCount =
-      this.gs.getCurrentPlayer() === this.gs.getPlayer1() &&
-      this.gs.getPlayer2().isStockfish()
-        ? 2
-        : 1;
+    const undoCount = this.gs.getOpposingPlayer().isStockfish() ? 2 : 1;
 
     for (let i = 0; i < redoCount; i++) {
       if (this.move.undone.length < 1) {
