@@ -152,20 +152,24 @@ class GameController {
     return FENGenerator.toFEN(this.board, this.move, this.gs);
   }
 
-  toggleContinuousAnalysis(enabled) {
-    this.sfController.toggleContinuousAnalysis(enabled);
+  toggleNNUEAnalysis(enabled) {
+    this.sfController.toggleAnalysis(enabled, "NNUE");
   }
 
-  toggleClassicalContinuousAnalysis(enabled) {
-    this.sfController.toggleClassicalContinuousAnalysis(enabled);
+  toggleClassicalAnalysis(enabled) {
+    this.sfController.toggleAnalysis(enabled, "Classical");
   }
 
   makeStockfishMove() {
     this.sfController
-      .getStockfishAsOpponentMove()
+      .makeStockfishMove()
       .then((stockfishMove) => {
-        this.mh.finalizeMove(stockfishMove);
-        this.guiController.updateGUI();
+        // delay to make move feel more natural
+        setTimeout(() => {
+          this.mh.handleCheckAndCheckmate();
+          this.mh.finalizeMove(stockfishMove);
+          this.guiController.updateGUI();
+        }, 500);
       })
       .catch((error) => {
         console.error("Error getting Stockfish move:", error);
@@ -173,12 +177,7 @@ class GameController {
   }
 
   requestStockfishAnalysis() {
-    if (
-      this.sfController.isContinuousAnalysisEnabled ||
-      this.sfController.isClassicalContinuousAnalysisEnabled
-    ) {
-      this.sfController.requestAnalysisIfNeeded();
-    }
+    this.sfController.requestAnalysisIfNeeded();
   }
 
   handleResetBoard() {

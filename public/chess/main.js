@@ -4,6 +4,9 @@ const playOrAnalysisModal = new PlayOrAnalysisModal();
 
 /*
 TO DO
+ - Fix best move arrow drawn after move during analysis (replace if lastCommand === "stop" conditional)
+              - fix best move arrow removed when switching between analysis types
+                     - FIX stockfish initialized twice switching analysis types
  - FIX commands sent to stockfish before readyok is received (getStockfishAsOpponentMove)
         --Implement stockfish castling
  - Add current selection highlight to modal!!!

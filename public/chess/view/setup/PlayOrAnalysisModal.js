@@ -23,29 +23,59 @@ class PlayOrAnalysisModal {
   initializeModal() {
     this.openModal();
 
-    document
-      .getElementById("vs-computer-mode")
-      .addEventListener("click", () => this.handleSelection("playVsComputer"));
-    document
-      .getElementById("analysis-mode")
-      .addEventListener("click", () => this.handleSelection("analysis"));
+    const analysisModeButton = document.getElementById("analysis-mode");
+    const vsComputerModeButton = document.getElementById("vs-computer-mode");
+    const colorSelectionContainer = document.getElementById(
+      "color-choices-container"
+    );
+    const strengthLevelButtonsDiv = document.getElementById(
+      "strength-level-buttons"
+    );
 
-    document.querySelectorAll(".color-choice").forEach((element) => {
-      element.addEventListener("click", (event) => {
-        let button = event.target.closest(".color-choice");
-        let selectedColor = button.dataset.color;
+    analysisModeButton.addEventListener("click", () => {
+      this.handleSelection("analysis");
+      analysisModeButton.classList.add("selected");
+      vsComputerModeButton.classList.remove("selected");
+    });
+
+    vsComputerModeButton.addEventListener("click", () => {
+      this.handleSelection("playVsComputer");
+      vsComputerModeButton.classList.add("selected");
+      analysisModeButton.classList.remove("selected");
+    });
+
+    colorSelectionContainer.addEventListener("click", (event) => {
+      let button = event.target.closest(".color-choice");
+      if (button) {
+        const selectedColor = button.dataset.color;
         this.colorSelection =
           PlayOrAnalysisModal.COLOR_MAPPING[selectedColor] || selectedColor;
-      });
+        colorSelectionContainer
+          .querySelectorAll(".color-choice")
+          .forEach((element) => {
+            element.classList.remove("selected");
+          });
+        button.classList.add("selected");
+      }
     });
 
-    document.getElementById("play-button").addEventListener("click", () => {
-      this.handlePlayButtonClick();
+    strengthLevelButtonsDiv.addEventListener("click", (event) => {
+      if (event.target.matches(".strength-level")) {
+        this.strengthLevel = event.target.dataset.strength;
+        strengthLevelButtonsDiv
+          .querySelectorAll(".strength-level")
+          .forEach((element) => {
+            element.classList.remove("selected");
+          });
+        event.target.classList.add("selected");
+      }
     });
-
-    document.getElementById("close-button").addEventListener("click", () => {
-      this.closeModal();
-    });
+    document
+      .getElementById("play-button")
+      .addEventListener("click", () => this.handlePlayButtonClick());
+    document
+      .getElementById("close-button")
+      .addEventListener("click", () => this.closeModal());
   }
 
   handleSelection(selection) {
@@ -81,19 +111,13 @@ class PlayOrAnalysisModal {
       strengthLevelButtonsDiv.getElementsByClassName("strength-level")
         .length === 0
     ) {
+      let buttonsHTML = "";
       for (let i = 1; i <= 8; i++) {
-        let button = document.createElement("button");
-        if (i < 8) {
-          button.style.marginRight = "5px";
-        }
-        button.classList.add("strength-level");
-        button.setAttribute("data-strength", i);
-        button.textContent = `${i}`;
-        button.addEventListener("click", (event) => {
-          this.strengthLevel = event.target.dataset.strength;
-        });
-        strengthLevelButtonsDiv.appendChild(button);
+        buttonsHTML += `<button class="strength-level" data-strength="${i}" style="margin-right: ${
+          i < 8 ? "5px" : "0"
+        };">${i}</button>`;
       }
+      strengthLevelButtonsDiv.innerHTML = buttonsHTML;
     }
   }
 

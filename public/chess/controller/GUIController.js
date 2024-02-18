@@ -98,12 +98,12 @@ class GUIController {
     this.chessBoardPanel.clearBestMoveArrow();
   }
 
-  toggleContinuousAnalysis(enabled) {
-    this.gameController.toggleContinuousAnalysis(enabled);
+  toggleNNUEAnalysis(enabled) {
+    this.gameController.toggleNNUEAnalysis(enabled);
   }
 
-  toggleClassicalContinuousAnalysis(enabled) {
-    this.gameController.toggleClassicalContinuousAnalysis(enabled);
+  toggleClassicalAnalysis(enabled) {
+    this.gameController.toggleClassicalAnalysis(enabled);
   }
 
   updateGUI() {

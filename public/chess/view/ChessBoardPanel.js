@@ -364,7 +364,9 @@ class ChessBoardPanel {
     const flipBoardButton = document.getElementById("flip-board");
     const resetBoardButton = document.getElementById("reset-board");
     const submitFENButton = document.getElementById("submit-fen");
-    const sfAnalysisCheckbox = document.getElementById("sf-analysis-checkbox");
+    const sfNNUEAnalysisCheckbox = document.getElementById(
+      "sf-NNUE-analysis-checkbox"
+    );
     const sfClassicalAnalysisCheckbox = document.getElementById(
       "sf-classical-analysis-checkbox"
     );
@@ -388,23 +390,21 @@ class ChessBoardPanel {
       this.onSubmitFENButtonClick();
     });
 
-    sfAnalysisCheckbox.addEventListener("change", (event) => {
+    sfNNUEAnalysisCheckbox.addEventListener("change", (event) => {
       if (event.target.checked) {
-        this.guiController.toggleContinuousAnalysis(true);
-        this.guiController.toggleClassicalContinuousAnalysis(false);
+        this.guiController.toggleNNUEAnalysis(true);
         sfClassicalAnalysisCheckbox.checked = false;
       } else {
-        this.guiController.toggleContinuousAnalysis(false);
+        this.guiController.toggleNNUEAnalysis(false);
       }
     });
 
     sfClassicalAnalysisCheckbox.addEventListener("change", (event) => {
       if (event.target.checked) {
-        this.guiController.toggleClassicalContinuousAnalysis(true);
-        this.guiController.toggleContinuousAnalysis(false);
-        sfAnalysisCheckbox.checked = false;
+        this.guiController.toggleClassicalAnalysis(true);
+        sfNNUEAnalysisCheckbox.checked = false;
       } else {
-        this.guiController.toggleClassicalContinuousAnalysis(false);
+        this.guiController.toggleClassicalAnalysis(false);
       }
     });
 
