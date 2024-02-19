@@ -4,22 +4,23 @@ const playOrAnalysisModal = new PlayOrAnalysisModal();
 
 /*
 TO DO
- - Disallow moving for stockfish during its move.  Fix checkmate highlight/game log panel. 
- - Test stockfish castling/promotion/en passant
- - Implement captured pieces/material advantage
+ - Test stockfish castling/promotion/en passant (have seen promotion and castling work)
 
  - Fix king check highlight after promotion after reset game ??
 
  - Show current depth/sf advantage in analysis mode
+ - Implement captured pieces/material advantage
 
  - Make drawing arrow/circle over pre-existing arrow/circle remove it.
+       - make dragging div x + squareSize on mobile and width/height bigger to account for finger occluding view
 
- - Go through and change private fields to normal, remove getters.
-     -Thought it was a good idea, not liking it now.  Maybe keep setters?  They make sense in my brain
+ - Refactor private fields/methods vs public ones (large scale. sfController as model)
+
  - Make move piece with click a smooth glide to location
       - Add sounds
+
  - Implement if play vs stockfish -> if player selects black, auto flip board
-  - Make close button an x in top right of modal, make play button green
+       - Make close button an x in top right of modal, make play button green
  
  - Implement PGN box
 */

@@ -257,7 +257,7 @@ class MoveHandler {
   }
 
   handleRedoMove() {
-    const undoCount = this.gs.getOpposingPlayer().isStockfish() ? 2 : 1;
+    const redoCount = this.gs.getOpposingPlayer().isStockfish() ? 2 : 1;
 
     for (let i = 0; i < redoCount; i++) {
       if (this.move.undone.length < 1) {

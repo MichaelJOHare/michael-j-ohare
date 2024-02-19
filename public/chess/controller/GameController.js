@@ -112,6 +112,10 @@ class GameController {
   }
 
   handleDragDrop(endRow, endCol) {
+    if (this.gs.isBoardLocked) {
+      return;
+    }
+
     this.mh.handleDragDrop(endRow, endCol);
 
     if (this.gs.isGameOver) {
@@ -157,6 +161,7 @@ class GameController {
   }
 
   makeStockfishMove() {
+    this.gs.isBoardLocked = true;
     // delay 400-1200ms to make move feel more natural
     const delay = Math.random() * (1200 - 400) + 400;
     this.sfController
@@ -165,10 +170,13 @@ class GameController {
         setTimeout(() => {
           this.mh.finalizeMove(stockfishMove);
           this.mh.handleCheckAndCheckmate();
+          this.gs.isBoardLocked = false;
           this.guiController.updateGUI();
         }, delay);
       })
       .catch((error) => {
+        this.gs.isBoardLocked = false;
+        this.guiController.updateGUI();
         console.error("Error getting Stockfish move:", error);
       });
   }

@@ -1,5 +1,4 @@
 import PlayerColor from "../player/PlayerColor.js";
-import PlayerType from "../player/PlayerType.js";
 import GameStateMemento from "./GameStateMemento.js";
 
 class GameState {
@@ -13,7 +12,6 @@ class GameState {
 
     this.isGameOver = false;
     this.isBoardLocked = false;
-    this.stockfishElo = -1;
   }
 
   init() {
@@ -97,10 +95,6 @@ class GameState {
 
   isStockfish() {
     return this.currentPlayer.isStockfish();
-  }
-
-  getStockfishElo() {
-    return this.stockfishElo;
   }
 
   isGameOver() {
