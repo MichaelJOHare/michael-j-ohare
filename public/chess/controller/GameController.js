@@ -152,24 +152,21 @@ class GameController {
     return FENGenerator.toFEN(this.board, this.move, this.gs);
   }
 
-  toggleNNUEAnalysis(enabled) {
-    this.sfController.toggleAnalysis(enabled, "NNUE");
-  }
-
-  toggleClassicalAnalysis(enabled) {
-    this.sfController.toggleAnalysis(enabled, "Classical");
+  toggleAnalysis(enabled, analysisType) {
+    this.sfController.toggleAnalysis(enabled, analysisType);
   }
 
   makeStockfishMove() {
+    // delay 400-1200ms to make move feel more natural
+    const delay = Math.random() * (1200 - 400) + 400;
     this.sfController
       .makeStockfishMove()
       .then((stockfishMove) => {
-        // delay to make move feel more natural
         setTimeout(() => {
-          this.mh.handleCheckAndCheckmate();
           this.mh.finalizeMove(stockfishMove);
+          this.mh.handleCheckAndCheckmate();
           this.guiController.updateGUI();
-        }, 500);
+        }, delay);
       })
       .catch((error) => {
         console.error("Error getting Stockfish move:", error);

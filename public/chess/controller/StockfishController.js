@@ -6,6 +6,7 @@ import Square from "../model/board/Square.js";
 import EnPassantMove from "../model/moves/EnPassantMove.js";
 import CastlingMove from "../model/moves/CastlingMove.js";
 import PieceType from "../model/pieces/PieceType.js";
+import ChessBoard from "../model/board/ChessBoard.js";
 
 class StockfishController {
   static ENGINE_SETTINGS = [
@@ -20,7 +21,7 @@ class StockfishController {
   ];
   static DEFAULT_DEPTH = 24;
   static UPDATE_INTERVAL = 3000;
-  static DEPTH_INTERVAL = 5;
+  static DEPTH_INTERVAL = 3;
 
   constructor(board, move, gameState, gui, strengthLevel) {
     this.board = board;
@@ -34,7 +35,6 @@ class StockfishController {
 
   _initializeProperties() {
     this._debouncer = new Debouncer(300);
-    this._threadsAvailable = navigator.hardwareConcurrency;
     this._isNNUEAnalysisEnabled = false;
     this._isClassicalAnalysisEnabled = false;
     this._isAnalysisMode = this.strengthLevel === 0;
@@ -63,9 +63,10 @@ class StockfishController {
       this._sendCommand(`setoption name Skill Level value ${skill}`);
     } else {
       this._sendCommand("setoption name UCI_AnalyseMode value true");
-      this._sendCommand(
-        `setoption name Threads value ${this._threadsAvailable}`
-      );
+      const threads = this._isNNUEAnalysisEnabled
+        ? this._calculateThreadsForNNUE()
+        : 1;
+      this._sendCommand(`setoption name Threads value ${threads}`);
       if (this._isNNUEAnalysisEnabled) {
         this._sendCommand("setoption name Use NNUE value true");
       }
@@ -99,9 +100,9 @@ class StockfishController {
       this._updateAnalysisFromDepthInfo(event.data);
     } else if (event.data.startsWith("bestmove")) {
       const bestMoveStr = event.data.split(" ")[1];
-      if (this._isAnalysisMode) {
+      if (this._isAnalysisMode && this._lastCommand !== "stop") {
         this._addBestMoveAnalysisArrow(bestMoveStr);
-      } else {
+      } else if (!this._isAnalysisMode) {
         const move = this._processBestMoveEvent(bestMoveStr);
         if (this._moveResolver) {
           this._moveResolver(move);
@@ -125,26 +126,25 @@ class StockfishController {
 
   _processBestMoveEvent(bestMoveStr) {
     const promotionChar = bestMoveStr.length > 4 ? bestMoveStr[4] : null;
-    let isEnPassant = false;
-    let isCastlingMove = false;
+    let isEnPassant = false,
+      isCastlingMove = false;
 
     const fromNotation = bestMoveStr.substring(0, 2);
     const toNotation = bestMoveStr.substring(2, 4);
-
     const fromRowCol = this._convertNotationToSquare(fromNotation);
-    const fromSquare = new Square(fromRowCol.row, fromRowCol.col);
     const toRowCol = this._convertNotationToSquare(toNotation);
+    const fromSquare = new Square(fromRowCol.row, fromRowCol.col);
     const toSquare = new Square(toRowCol.row, toRowCol.col);
-
     const movingPiece = this.board.getPieceAt(fromRowCol.row, fromRowCol.col);
     const capturedPiece = this.board.getPieceAt(toRowCol.row, toRowCol.col);
 
-    if (
-      movingPiece.getType() === PieceType.PAWN &&
-      Math.abs(toRowCol.col - fromRowCol.col > 0)
-    ) {
-      isEnPassant === true;
-    }
+    isEnPassant = this._isEnPassantMove(
+      movingPiece,
+      fromRowCol,
+      toRowCol,
+      capturedPiece
+    );
+    isCastlingMove = this._isCastlingMove(movingPiece, fromRowCol, toRowCol);
 
     if (promotionChar) {
       const promotionType = this._determinePromotionType(promotionChar);
@@ -157,30 +157,19 @@ class StockfishController {
         this.board
       );
     } else if (isEnPassant) {
-      // placeholder
-      const epCapturedPiece = this._getEnPassantCapturedPiece();
-      // placeholder
-      const epSquareBeforeCapture = this._getEnPassantCaptureSquare();
-      return new EnPassantMove(
+      return this._createEnPassantMove(
         movingPiece,
         fromSquare,
         toSquare,
-        epSquareBeforeCapture,
-        epCapturedPiece,
-        this.board
+        toRowCol
       );
     } else if (isCastlingMove) {
-      const [castlingRook, rookFromSquare, rookToSquare] =
-        // placeholder
-        this._getCastlingRookAndSquares();
-      return new CastlingMove(
+      return this._createCastlingMove(
         movingPiece,
-        castlingRook,
         fromSquare,
         toSquare,
-        rookFromSquare,
-        rookToSquare,
-        this.board
+        fromRowCol,
+        toRowCol
       );
     } else {
       return new Move(
@@ -191,6 +180,69 @@ class StockfishController {
         this.board
       );
     }
+  }
+
+  _isEnPassantMove(movingPiece, fromRowCol, toRowCol) {
+    return (
+      movingPiece.getType() === PieceType.PAWN &&
+      Math.abs(toRowCol.col - fromRowCol.col) === 1 &&
+      this.board.isEmpty(toRowCol.row, toRowCol.col)
+    );
+  }
+
+  _isCastlingMove(movingPiece, fromRowCol, toRowCol) {
+    return (
+      movingPiece.getType() === PieceType.KING &&
+      Math.abs(toRowCol.col - fromRowCol.col) > 1
+    );
+  }
+
+  _createEnPassantMove(movingPiece, fromSquare, toSquare, toRowCol) {
+    const direction = movingPiece.getPlayer().isWhite() ? -1 : 1;
+    const epCapturedPiece = this.board.getPieceAt(
+      toRowCol.row + direction,
+      toRowCol.col
+    );
+    const epSquareBeforeCapture = epCapturedPiece.getCurrentSquare();
+    return new EnPassantMove(
+      movingPiece,
+      fromSquare,
+      toSquare,
+      epSquareBeforeCapture,
+      epCapturedPiece,
+      this.board
+    );
+  }
+
+  _createCastlingMove(movingPiece, fromSquare, toSquare, fromRowCol, toRowCol) {
+    const [castlingRook, rookFromSquare, rookToSquare] =
+      this._getCastlingRookAndSquares(fromRowCol, toRowCol);
+    return new CastlingMove(
+      movingPiece,
+      castlingRook,
+      fromSquare,
+      toSquare,
+      rookFromSquare,
+      rookToSquare,
+      this.board
+    );
+  }
+
+  _getCastlingRookAndSquares(fromRowCol, toRowCol) {
+    const isQueenside = fromRowCol.col > toRowCol.col;
+
+    const rookStartCol = isQueenside
+      ? ChessBoard.ROOK_COLUMN_1
+      : ChessBoard.ROOK_COLUMN_2;
+    const rookEndCol = isQueenside
+      ? ChessBoard.QUEEN_COLUMN
+      : ChessBoard.KNIGHT_COLUMN_2;
+
+    const rook = this.board.getPieceAt(fromRowCol.row, rookStartCol);
+    const rookFromSquare = new Square(fromRowCol.row, rookStartCol);
+    const rookToSquare = new Square(fromRowCol.row, rookEndCol);
+
+    return [rook, rookFromSquare, rookToSquare];
   }
 
   _determinePromotionType(char) {
@@ -206,18 +258,6 @@ class StockfishController {
       default:
         return null;
     }
-  }
-
-  _getEnPassantCapturedPiece() {
-    // placeholder
-  }
-
-  _getEnPassantCaptureSquare() {
-    // placeholder
-  }
-
-  _getCastlingRookAndSquares() {
-    // return array [rook, rookFromSquare, rookToSquare]
   }
 
   _updateAnalysisFromDepthInfo(data) {
@@ -254,6 +294,7 @@ class StockfishController {
   }
 
   _addBestMoveAnalysisArrow(bestMoveStr) {
+    this._bestMove = bestMoveStr;
     const fromSquare = bestMoveStr.substring(0, 2);
     const toSquare = bestMoveStr.substring(2, 4);
 
@@ -289,20 +330,52 @@ class StockfishController {
     return StockfishController.ENGINE_SETTINGS[index];
   }
 
-  toggleAnalysis(enable, analysisType) {
-    if (analysisType === "NNUE") {
-      this._isNNUEAnalysisEnabled = enable;
-      this._isClassicalAnalysisEnabled = !enable;
-    } else if (analysisType === "Classical") {
-      this._isClassicalAnalysisEnabled = enable;
-      this._isNNUEAnalysisEnabled = !enable;
+  _reconfigureEngineOptions() {
+    const threads = this._isNNUEAnalysisEnabled
+      ? this._calculateThreadsForNNUE()
+      : 1;
+    this._sendCommand(`setoption name Threads value ${threads}`);
+    if (this._isNNUEAnalysisEnabled) {
+      this._sendCommand("setoption name Use NNUE value true");
+    } else {
+      this._sendCommand("setoption name Use NNUE value false");
     }
+  }
 
-    this.gui.clearBestMoveArrow();
+  _calculateThreadsForNNUE() {
+    let threads = navigator.hardwareConcurrency;
+    if (threads % 2 !== 0) {
+      threads -= 1;
+    }
+    return threads;
+  }
+
+  toggleAnalysis(enable, analysisType) {
     if (enable) {
+      const wasNNUEEnabled = this._isNNUEAnalysisEnabled;
+      const wasClassicalEnabled = this._isClassicalAnalysisEnabled;
+      if (analysisType === "NNUE") {
+        this._isNNUEAnalysisEnabled = enable;
+        this._isClassicalAnalysisEnabled = !enable;
+      } else if (analysisType === "Classical") {
+        this._isClassicalAnalysisEnabled = enable;
+        this._isNNUEAnalysisEnabled = !enable;
+      }
+
+      if (wasNNUEEnabled || wasClassicalEnabled) {
+        this._reconfigureEngineOptions();
+      }
+
+      this.gui.clearBestMoveArrow();
       this._ensureEngineInitialized();
       this.requestAnalysisIfNeeded();
-    } else {
+    } else if (
+      !enable &&
+      !this._isNNUEAnalysisEnabled &&
+      !this._isClassicalAnalysisEnabled
+    ) {
+      this._isNNUEAnalysisEnabled = false;
+      this._isClassicalAnalysisEnabled = false;
       this.cleanUp();
     }
   }

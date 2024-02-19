@@ -4,10 +4,8 @@ const playOrAnalysisModal = new PlayOrAnalysisModal();
 
 /*
 TO DO
- - Fix best move arrow drawn after move during analysis (replace if lastCommand === "stop" conditional)
-              - fix best move arrow removed when switching between analysis types
-                     - FIX stockfish initialized twice switching analysis types
- -Finish implementing stockfish castling/promotion/en passant
+ - Disallow moving for stockfish during its move.  Fix checkmate highlight/game log panel. 
+ - Test stockfish castling/promotion/en passant
  - Implement captured pieces/material advantage
 
  - Fix king check highlight after promotion after reset game ??
@@ -21,6 +19,7 @@ TO DO
  - Make move piece with click a smooth glide to location
       - Add sounds
  - Implement if play vs stockfish -> if player selects black, auto flip board
+  - Make close button an x in top right of modal, make play button green
  
  - Implement PGN box
 */

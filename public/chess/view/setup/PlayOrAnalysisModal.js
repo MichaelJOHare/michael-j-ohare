@@ -73,9 +73,10 @@ class PlayOrAnalysisModal {
     document
       .getElementById("play-button")
       .addEventListener("click", () => this.handlePlayButtonClick());
-    document
-      .getElementById("close-button")
-      .addEventListener("click", () => this.closeModal());
+    document.getElementById("close-button").addEventListener("click", () => {
+      this.handleSelection("analysis");
+      this.closeModal();
+    });
   }
 
   handleSelection(selection) {

@@ -392,19 +392,19 @@ class ChessBoardPanel {
 
     sfNNUEAnalysisCheckbox.addEventListener("change", (event) => {
       if (event.target.checked) {
-        this.guiController.toggleNNUEAnalysis(true);
+        this.guiController.toggleAnalysis(true, "NNUE");
         sfClassicalAnalysisCheckbox.checked = false;
       } else {
-        this.guiController.toggleNNUEAnalysis(false);
+        this.guiController.toggleAnalysis(false, "NNUE");
       }
     });
 
     sfClassicalAnalysisCheckbox.addEventListener("change", (event) => {
       if (event.target.checked) {
-        this.guiController.toggleClassicalAnalysis(true);
+        this.guiController.toggleAnalysis(true, "Classical");
         sfNNUEAnalysisCheckbox.checked = false;
       } else {
-        this.guiController.toggleClassicalAnalysis(false);
+        this.guiController.toggleAnalysis(false, "Classical");
       }
     });
 
