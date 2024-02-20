@@ -114,12 +114,14 @@ class PlayOrAnalysisModal {
     this.handleSelection("analysis");
     this.toggleSelected(this.analysisModeButton, true);
     this.toggleSelected(this.vsComputerModeButton, false);
+    this.modalButtons.style.removeProperty("justify-content");
   };
 
   handleVsComputerModeClick = () => {
     this.handleSelection("playVsComputer");
     this.toggleSelected(this.vsComputerModeButton, true);
     this.toggleSelected(this.analysisModeButton, false);
+    this.modalButtons.style.justifyContent = "center";
   };
 
   handleColorSelectionClick = (event) => {
@@ -176,8 +178,7 @@ class PlayOrAnalysisModal {
 
   handleCloseButtonClick = () => {
     this.handleSelection("analysis");
-    this.removeModalEventListeners();
-    this.closeModal();
+    this.handlePlayButtonClick();
   };
 
   handleResetBoardButtonClick = (event) => {
@@ -233,12 +234,20 @@ class PlayOrAnalysisModal {
     document.removeEventListener("click", this.handleOutsideClick);
   }
 
+  get modalContent() {
+    return document.getElementById("modal-content");
+  }
+
   get analysisModeButton() {
     return document.getElementById("analysis-mode");
   }
 
   get vsComputerModeButton() {
     return document.getElementById("vs-computer-mode");
+  }
+
+  get modalButtons() {
+    return document.getElementById("modal-buttons");
   }
 
   get colorSelectionContainer() {

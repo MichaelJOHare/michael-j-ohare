@@ -4,6 +4,8 @@ const playOrAnalysisModal = new PlayOrAnalysisModal();
 
 /*
 TO DO
+ - Debug after reset (analysis?) game -> move -> drag piece while stockfish move -> showing previous game state while stockfish moves
+
  - Test stockfish castling/promotion/en passant (have seen promotion and castling work)
 
  - Fix stockfish bestmove (none) after checkmate processBestMove

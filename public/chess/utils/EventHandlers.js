@@ -15,13 +15,18 @@ class EventHandlers {
     this.clearHighlights = clearHighlightsCallback;
     this.clearSquareOnCanvas = clearSquareOnCanvasCallback;
     this.drawGhostPieceOnCanvas = drawGhostPieceOnCanvasCallback;
-    this.boardContainer = document.getElementById("chessboard-container");
     this.guiController = guiController;
     this.imageLoader = imageLoader;
     this.canvas = canvas;
     this.board = board;
     this.boardHighlighter = boardHighlighter;
 
+    this.initProperties();
+  }
+
+  initProperties() {
+    this.boardContainer = document.getElementById("chessboard-container");
+    this.draggingDiv = document.getElementById("draggingDiv");
     this.isBoardFlipped = false;
     this.squareSize = 0;
     this.unscaledSquareSize = 0;
@@ -36,14 +41,6 @@ class EventHandlers {
     this.startY = 0;
     this.offsetX = 0;
     this.offsetY = 0;
-
-    this.draggingDiv = document.createElement("div");
-    this.draggingDiv.className = "draggingDiv";
-    this.draggingDiv.style.position = "absolute";
-    this.draggingDiv.style.visibility = "hidden";
-    this.draggingDiv.style.zIndex = "2";
-    this.draggingDiv.style.pointerEvents = "none";
-    this.boardContainer.appendChild(this.draggingDiv);
   }
 
   onMouseDown(event) {

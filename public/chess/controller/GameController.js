@@ -79,7 +79,6 @@ class GameController {
     this.guiController.updateGUI();
   }
 
-  // should be async?
   async handleClickToMove(row, col) {
     if (this.gs.isBoardLocked) {
       return;
@@ -112,7 +111,6 @@ class GameController {
     this.mh.handleDragStart(row, col);
   }
 
-  // should be async?
   async handleDragDrop(endRow, endCol) {
     if (this.gs.isBoardLocked) {
       return;

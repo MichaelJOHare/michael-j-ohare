@@ -29,29 +29,37 @@
     <hero-section></hero-section>
     <dialog id="modal">
       <article id="modal-content">
-        <h2>Choose Your Mode</h2>
-        <button id="analysis-mode">Analysis</button>
-        <button id="vs-computer-mode">Play vs Computer</button>
-        <div id="strength-level-options" class="hidden">
-          <h3>Strength Level</h3>
-          <div id="strength-level-buttons"></div>
+        <div id="modal-header">
+          <img
+            src="./images/cancel-icon.svg"
+            id="close-button"
+            alt="cancel-icon"
+          />
+          <h2>Choose Mode</h2>
         </div>
-        <div id="color-selection" class="hidden">
-          <h3>Choose Color</h3>
-          <div id="color-choices-container">
-            <button class="color-choice" data-color="white">
-              <img src="images/White_King.svg" alt="Play as White" />
-            </button>
-            <button class="color-choice" data-color="random">
-              <img src="images/Random-king.svg" alt="Play as Random" />
-            </button>
-            <button class="color-choice" data-color="black">
-              <img src="images/Black_King.svg" alt="Play as Black" />
-            </button>
+        <div id="modal-buttons">
+          <button id="analysis-mode">Analysis</button>
+          <button id="vs-computer-mode">Play vs Computer</button>
+          <div id="strength-level-options" class="hidden">
+            <h3>Strength Level</h3>
+            <div id="strength-level-buttons"></div>
           </div>
+          <div id="color-selection" class="hidden">
+            <h3>Choose Color</h3>
+            <div id="color-choices-container">
+              <button class="color-choice" data-color="white">
+                <img src="images/White_King.svg" alt="Play as White" />
+              </button>
+              <button class="color-choice" data-color="random">
+                <img src="images/Random-king.svg" alt="Play as Random" />
+              </button>
+              <button class="color-choice" data-color="black">
+                <img src="images/Black_King.svg" alt="Play as Black" />
+              </button>
+            </div>
+          </div>
+          <button id="play-button">Play</button>
         </div>
-        <button id="play-button">Play</button>
-        <button id="close-button">Close</button>
       </article>
     </dialog>
     <div id="outer-container">
@@ -63,6 +71,16 @@
               id="chessSVG"
               style="position: absolute; left: 0; top: 0; z-index: 2"
             ></svg>
+            <div
+              class="draggingDiv"
+              id="draggingDiv"
+              style="
+                position: absolute;
+                visibility: hidden;
+                z-index: 2;
+                pointer-events: none;
+              "
+            ></div>
           </div>
           <div id="text-areas-container">
             <div id="fen-title-box">

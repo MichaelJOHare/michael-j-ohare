@@ -91,13 +91,11 @@ class StockfishController {
   }
 
   _sendCommand(command) {
-    console.log(`Sending command to Stockfish: ${command}`);
     this._lastCommand = command;
     this._stockfish.postMessage(command);
   }
 
   _handleStockfishMessage(event) {
-    console.log(`Stockfish: ${event.data}`);
     if (event.data.startsWith("info depth") && this._isAnalysisMode) {
       this._updateAnalysisFromDepthInfo(event.data);
     } else if (event.data.startsWith("bestmove")) {
