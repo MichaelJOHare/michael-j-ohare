@@ -178,7 +178,7 @@ class ChessBoardHighlighter {
   drawCornerHighlights(row, col) {
     this.clearSquareOnOffscreenCanvas(row, col);
 
-    // Draw the square with the highlight color
+    // fill the square with the highlight color
     this.offscreenCtx.fillStyle =
       (row + col) % 2 === 0
         ? ChessBoardPanel.LIGHT_SQUARE_HIGHLIGHT_COLOR
@@ -200,6 +200,7 @@ class ChessBoardHighlighter {
     );
     this.offscreenCtx.clip();
 
+    // fill circle in square with original square color
     const radius = this.squareSize * 0.58;
     const centerX = (col + 0.5) * this.squareSize;
     const centerY = (row + 0.5) * this.squareSize;

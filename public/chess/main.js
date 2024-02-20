@@ -6,7 +6,7 @@ const playOrAnalysisModal = new PlayOrAnalysisModal();
 TO DO
  - Test stockfish castling/promotion/en passant (have seen promotion and castling work)
 
- - Fix king check highlight after promotion after reset game ??
+ - Fix stockfish bestmove (none) after checkmate processBestMove
 
  - Show current depth/sf advantage in analysis mode
  - Implement captured pieces/material advantage

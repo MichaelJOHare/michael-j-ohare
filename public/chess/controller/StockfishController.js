@@ -49,10 +49,12 @@ class StockfishController {
   }
 
   _ensureEngineInitialized() {
-    if (!this._stockfish) {
+    if (this._stockfish) {
+      return Promise.resolve();
+    } else {
       this._stockfish = new Worker("/chess/stockfish/stockfish-nnue-16.js");
       this._stockfish.onmessage = this._handleStockfishMessage.bind(this);
-      this._initEngine(!this._isAnalysisMode);
+      return this._initEngine(!this._isAnalysisMode);
     }
   }
 
@@ -236,7 +238,7 @@ class StockfishController {
       : ChessBoard.ROOK_COLUMN_2;
     const rookEndCol = isQueenside
       ? ChessBoard.QUEEN_COLUMN
-      : ChessBoard.KNIGHT_COLUMN_2;
+      : ChessBoard.BISHOP_COLUMN_2;
 
     const rook = this.board.getPieceAt(fromRowCol.row, rookStartCol);
     const rookFromSquare = new Square(fromRowCol.row, rookStartCol);
@@ -350,7 +352,7 @@ class StockfishController {
     return threads;
   }
 
-  toggleAnalysis(enable, analysisType) {
+  async toggleAnalysis(enable, analysisType) {
     if (enable) {
       const wasNNUEEnabled = this._isNNUEAnalysisEnabled;
       const wasClassicalEnabled = this._isClassicalAnalysisEnabled;
@@ -367,7 +369,7 @@ class StockfishController {
       }
 
       this.gui.clearBestMoveArrow();
-      this._ensureEngineInitialized();
+      await this._ensureEngineInitialized();
       this.requestAnalysisIfNeeded();
     } else if (
       !enable &&
@@ -395,7 +397,7 @@ class StockfishController {
   }
 
   async makeStockfishMove() {
-    this._ensureEngineInitialized();
+    await this._ensureEngineInitialized();
 
     const { depth, moveTime } = this._getEngineSettings();
     const fen = this._calculatePositionHash();

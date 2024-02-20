@@ -79,7 +79,8 @@ class GameController {
     this.guiController.updateGUI();
   }
 
-  handleClickToMove(row, col) {
+  // should be async?
+  async handleClickToMove(row, col) {
     if (this.gs.isBoardLocked) {
       return;
     }
@@ -90,7 +91,7 @@ class GameController {
       !this.mh.isFirstClick &&
       !this.gs.getCurrentPlayer().isStockfish()
     ) {
-      this.mh.handleMovePieceClick(row, col);
+      await this.mh.handleMovePieceClick(row, col);
       this.requestStockfishAnalysis();
     }
 
@@ -111,12 +112,13 @@ class GameController {
     this.mh.handleDragStart(row, col);
   }
 
-  handleDragDrop(endRow, endCol) {
+  // should be async?
+  async handleDragDrop(endRow, endCol) {
     if (this.gs.isBoardLocked) {
       return;
     }
 
-    this.mh.handleDragDrop(endRow, endCol);
+    await this.mh.handleDragDrop(endRow, endCol);
 
     if (this.gs.isGameOver) {
       this.sfController.cleanUp();
@@ -152,6 +154,11 @@ class GameController {
     this.mh.cancelPromotion(action);
   }
 
+  hidePromotionSelector(action) {
+    this.guiController.hidePromotionSelector(action);
+    this.guiController.clearGameLog();
+  }
+
   generateCurrentFEN() {
     return FENGenerator.toFEN(this.board, this.move, this.gs);
   }
@@ -183,23 +190,6 @@ class GameController {
 
   requestStockfishAnalysis() {
     this.sfController.requestAnalysisIfNeeded();
-  }
-
-  handleResetBoard() {
-    // Maybe attach this event listener in analysis modal, gotta check if everything will be
-    //      eligible for garbage collection if new GameController is made
-    this.sfController.cleanUp();
-    this.guiController.clearHighlightedSquares();
-    this.gs.init();
-    this.board.init(this.gs.getPlayer1(), this.gs.getPlayer2());
-    this.pm = this.board.getPieceManager();
-    this.mh.isFirstClick = true;
-    this.gs.setGameOver(false);
-    this.move.resetMoveHistory();
-    this.mementos = [];
-    this.mh.mementos = [];
-    this.guiController.updateGUI();
-    this.initiateGame();
   }
 }
 

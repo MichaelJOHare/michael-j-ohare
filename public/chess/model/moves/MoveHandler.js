@@ -96,7 +96,7 @@ class MoveHandler {
       );
       if (this.moves.length > 0) {
         this.gui.setHighlightedSquares(this.moves);
-        this.gui.drawBoard();
+        this.gui.updateGUI();
         return;
       } else {
         this.gui.updateGUI();

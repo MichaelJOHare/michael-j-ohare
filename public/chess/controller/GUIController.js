@@ -102,14 +102,14 @@ class GUIController {
     this.gameController.toggleAnalysis(enabled, analysisType);
   }
 
+  clearGameLog() {
+    this.gameLogPanel.clearGameLog();
+  }
+
   updateGUI() {
     this.writeCurrentFENString();
     this.gameLogPanel.updateGameLog();
     this.chessBoardPanel.drawBoard();
-  }
-
-  handleResetBoard() {
-    this.gameController.handleResetBoard();
   }
 }
 
