@@ -36,6 +36,7 @@ class ChessBoardPanel {
     this.squareSize = 0;
     this.svgSquareSize = 0;
     this.setScreen = this.setScreen.bind(this);
+    this.eventListeners = [];
 
     this.boardHighlighter = new ChessBoardHighlighter(
       this.board,
@@ -323,87 +324,82 @@ class ChessBoardPanel {
   }
 
   setupEventListeners() {
-    this.canvas.addEventListener(
+    this.addEventListener(
+      this.canvas,
       "mousedown",
-      this.eventHandlers.onMouseDown.bind(this.eventHandlers)
+      this.eventHandlers.onMouseDown
     );
-    this.canvas.addEventListener(
+    this.addEventListener(
+      this.canvas,
       "mousemove",
-      this.eventHandlers.onMouseMove.bind(this.eventHandlers)
+      this.eventHandlers.onMouseMove
     );
-    this.canvas.addEventListener(
-      "mouseup",
-      this.eventHandlers.onMouseUp.bind(this.eventHandlers)
-    );
+    this.addEventListener(this.canvas, "mouseup", this.eventHandlers.onMouseUp);
 
-    this.canvas.addEventListener(
+    this.addEventListener(
+      this.canvas,
       "touchstart",
-      this.eventHandlers.onTouchStart.bind(this.eventHandlers)
+      this.eventHandlers.onTouchStart
     );
-    this.canvas.addEventListener(
+    this.addEventListener(
+      this.canvas,
       "touchmove",
-      this.eventHandlers.onTouchMove.bind(this.eventHandlers)
+      this.eventHandlers.onTouchMove
     );
-    this.canvas.addEventListener(
+    this.addEventListener(
+      this.canvas,
       "touchend",
-      this.eventHandlers.onTouchEnd.bind(this.eventHandlers)
+      this.eventHandlers.onTouchEnd
     );
 
-    this.canvas.addEventListener("contextmenu", function (event) {
-      event.preventDefault();
-    });
-
-    const previousMoveButton = document.getElementById("prev-move");
-    const nextMoveButton = document.getElementById("next-move");
-    const importFromFENButton = document.getElementById("import-from-fen");
-    const flipBoardButton = document.getElementById("flip-board");
-    const submitFENButton = document.getElementById("submit-fen");
-    const sfNNUEAnalysisCheckbox = document.getElementById(
-      "sf-NNUE-analysis-checkbox"
-    );
-    const sfClassicalAnalysisCheckbox = document.getElementById(
-      "sf-classical-analysis-checkbox"
+    this.addEventListener(this.canvas, "contextmenu", (event) =>
+      event.preventDefault()
     );
 
-    previousMoveButton.addEventListener("click", () => {
-      this.onPreviousMoveButtonClick();
-    });
-    nextMoveButton.addEventListener("click", () => {
-      this.onNextMoveButtonClick();
-    });
-    importFromFENButton.addEventListener("click", () => {
-      this.onImportFromFENButtonClick();
-    });
-    flipBoardButton.addEventListener("click", () => {
-      this.toggleBoardFlip();
-    });
-    submitFENButton.addEventListener("click", () => {
-      this.onSubmitFENButtonClick();
-    });
+    this.addEventListener(document.getElementById("prev-move"), "click", () =>
+      this.onPreviousMoveButtonClick()
+    );
+    this.addEventListener(document.getElementById("next-move"), "click", () =>
+      this.onNextMoveButtonClick()
+    );
+    this.addEventListener(
+      document.getElementById("import-from-fen"),
+      "click",
+      () => this.onImportFromFENButtonClick()
+    );
+    this.addEventListener(document.getElementById("flip-board"), "click", () =>
+      this.toggleBoardFlip()
+    );
+    this.addEventListener(document.getElementById("submit-fen"), "click", () =>
+      this.onSubmitFENButtonClick()
+    );
 
-    sfNNUEAnalysisCheckbox.addEventListener("change", (event) => {
-      if (event.target.checked) {
-        this.guiController.toggleAnalysis(true, "NNUE");
-        sfClassicalAnalysisCheckbox.checked = false;
-      } else {
-        this.guiController.toggleAnalysis(false, "NNUE");
+    this.addEventListener(
+      document.getElementById("sf-NNUE-analysis-checkbox"),
+      "change",
+      (event) => {
+        const isChecked = event.target.checked;
+        this.guiController.toggleAnalysis(isChecked, "NNUE");
+        document.getElementById("sf-classical-analysis-checkbox").checked =
+          !isChecked;
       }
-    });
+    );
 
-    sfClassicalAnalysisCheckbox.addEventListener("change", (event) => {
-      if (event.target.checked) {
-        this.guiController.toggleAnalysis(true, "Classical");
-        sfNNUEAnalysisCheckbox.checked = false;
-      } else {
-        this.guiController.toggleAnalysis(false, "Classical");
+    this.addEventListener(
+      document.getElementById("sf-classical-analysis-checkbox"),
+      "change",
+      (event) => {
+        const isChecked = event.target.checked;
+        this.guiController.toggleAnalysis(isChecked, "Classical");
+        document.getElementById("sf-NNUE-analysis-checkbox").checked =
+          !isChecked;
       }
-    });
+    );
 
     if (screen.orientation) {
-      screen.orientation.addEventListener("change", this.setScreen.bind(this));
+      this.addEventListener(screen.orientation, "change", this.setScreen);
     }
-
-    window.addEventListener("resize", this.debounce(this.setScreen, 50));
+    this.addEventListener(window, "resize", this.debounce(this.setScreen, 50));
   }
 
   updateSquareSize() {
@@ -419,6 +415,24 @@ class ChessBoardPanel {
       this.promotionSelector.updateUnscaledSquareSize(this.svgSquareSize);
     }
     this.drawBoard();
+  }
+
+  addEventListener(target, type, listener, options) {
+    target.addEventListener(type, listener, options);
+    this.eventListeners.push({ target, type, listener });
+  }
+
+  removeAllEventListeners() {
+    this.eventListeners.forEach(({ target, type, listener }) => {
+      target.removeEventListener(type, listener);
+    });
+    this.eventListeners = [];
+  }
+
+  cleanup() {
+    this.removeAllEventListeners();
+    document.getElementById("sf-NNUE-analysis-checkbox").checked = false;
+    document.getElementById("sf-classical-analysis-checkbox").checked = false;
   }
 
   debounce(func, wait, immediate) {

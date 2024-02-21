@@ -97,10 +97,6 @@ class GameState {
     return this.currentPlayer.isStockfish();
   }
 
-  isGameOver() {
-    return this.isGameOver;
-  }
-
   setGameOver(gameOver) {
     this.isGameOver = gameOver;
   }

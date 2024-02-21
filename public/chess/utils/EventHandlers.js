@@ -43,7 +43,7 @@ class EventHandlers {
     this.offsetY = 0;
   }
 
-  onMouseDown(event) {
+  onMouseDown = (event) => {
     if (event.button === 0) {
       this.clearHighlights();
 
@@ -86,9 +86,9 @@ class EventHandlers {
       this.originalSquare = { row, col };
       this.isDrawing = true;
     }
-  }
+  };
 
-  onMouseMove(event) {
+  onMouseMove = (event) => {
     if (event.buttons === 1) {
       if (this.draggingPiece) {
         const moveX = event.clientX - this.startX;
@@ -159,9 +159,9 @@ class EventHandlers {
         }
       }
     }
-  }
+  };
 
-  onMouseUp(event) {
+  onMouseUp = (event) => {
     if (event.button === 0) {
       this.clearHighlights();
       this.draggingDiv.style.transform = "translate(0px, 0px)";
@@ -205,9 +205,9 @@ class EventHandlers {
       this.readyToDrawCircle = false;
       this.lastTargetSquare = null;
     }
-  }
+  };
 
-  onTouchStart(event) {
+  onTouchStart = (event) => {
     const touch = event.touches[0];
     this.onMouseDown({
       ...event,
@@ -215,9 +215,9 @@ class EventHandlers {
       clientY: touch.clientY,
       button: 0,
     });
-  }
+  };
 
-  onTouchMove(event) {
+  onTouchMove = (event) => {
     event.preventDefault();
     const touch = event.touches[0];
     this.onMouseMove({
@@ -226,9 +226,9 @@ class EventHandlers {
       clientY: touch.clientY,
       buttons: 1,
     });
-  }
+  };
 
-  onTouchEnd(event) {
+  onTouchEnd = (event) => {
     const touch = event.changedTouches[0];
     this.onMouseUp({
       ...event,
@@ -236,7 +236,7 @@ class EventHandlers {
       clientY: touch.clientY,
       button: 0,
     });
-  }
+  };
 
   getSquareFromCoordinates(x, y) {
     const rect = this.canvas.getBoundingClientRect();

@@ -148,7 +148,7 @@ class StockfishController {
 
     if (promotionChar) {
       const promotionType = this._determinePromotionType(promotionChar);
-      return new PromotionMove(
+      const promoMove = new PromotionMove(
         movingPiece,
         fromSquare,
         toSquare,
@@ -156,6 +156,8 @@ class StockfishController {
         promotionType,
         this.board
       );
+      promoMove.setPromotion(true);
+      return promoMove;
     } else if (isEnPassant) {
       return this._createEnPassantMove(
         movingPiece,
@@ -294,6 +296,7 @@ class StockfishController {
   }
 
   _addBestMoveAnalysisArrow(bestMoveStr) {
+    this.gui.clearBestMoveArrow();
     this._bestMove = bestMoveStr;
     const fromSquare = bestMoveStr.substring(0, 2);
     const toSquare = bestMoveStr.substring(2, 4);
@@ -369,15 +372,22 @@ class StockfishController {
       this.gui.clearBestMoveArrow();
       await this._ensureEngineInitialized();
       this.requestAnalysisIfNeeded();
-    } else if (
+    } else if (!enable) {
+      if (analysisType === "NNUE") {
+        this._isNNUEAnalysisEnabled = false;
+      }
+      if (analysisType === "Classical") {
+        this._isClassicalAnalysisEnabled = false;
+      }
+      // Figure out better way to do this, want to check if toggling off the only active analysis but maybe just leave as is
+    } /*  else if (
       !enable &&
       !this._isNNUEAnalysisEnabled &&
       !this._isClassicalAnalysisEnabled
     ) {
-      this._isNNUEAnalysisEnabled = false;
-      this._isClassicalAnalysisEnabled = false;
-      this.cleanUp();
-    }
+      this._isAnalysisMode = false;
+      this.cleanup();
+    } */
   }
 
   requestAnalysisIfNeeded() {
@@ -386,6 +396,7 @@ class StockfishController {
       if (this._positionHash) {
         this._stopCurrentAnalysis();
       }
+      this._bestMove = null;
       this.gui.clearBestMoveArrow();
       this._positionHash = newPositionHash;
       this._debouncer.debounce(() => this._getAnalysisMove(newPositionHash));
@@ -407,7 +418,7 @@ class StockfishController {
     });
   }
 
-  cleanUp() {
+  cleanup() {
     if (this._stockfish) {
       this._stockfish.terminate();
       this._stockfish = null;

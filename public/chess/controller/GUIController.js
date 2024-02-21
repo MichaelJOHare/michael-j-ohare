@@ -111,6 +111,11 @@ class GUIController {
     this.gameLogPanel.updateGameLog();
     this.chessBoardPanel.drawBoard();
   }
+
+  cleanup() {
+    this.gameLogPanel.cleanup();
+    this.chessBoardPanel.cleanup();
+  }
 }
 
 export default GUIController;

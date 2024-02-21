@@ -97,10 +97,6 @@ class GameController {
     if (this.gs.getCurrentPlayer().isStockfish()) {
       this.makeStockfishMove();
     }
-
-    if (this.gs.isGameOver) {
-      this.sfController.cleanUp();
-    }
   }
 
   handleDragStart(row, col) {
@@ -117,10 +113,6 @@ class GameController {
     }
 
     await this.mh.handleDragDrop(endRow, endCol);
-
-    if (this.gs.isGameOver) {
-      this.sfController.cleanUp();
-    }
 
     this.gs.getCurrentPlayer().isStockfish()
       ? this.makeStockfishMove()
@@ -139,9 +131,6 @@ class GameController {
   handleNextMoveButtonClick() {
     this.mh.handleRedoMove();
     this.requestStockfishAnalysis();
-    if (this.gs.isGameOver) {
-      this.sfController.cleanUp();
-    }
   }
 
   handleSingleRedo() {
@@ -165,29 +154,40 @@ class GameController {
     this.sfController.toggleAnalysis(enabled, analysisType);
   }
 
-  makeStockfishMove() {
+  async makeStockfishMove() {
+    if (this.gs.isGameOver) {
+      return;
+    }
+
     this.gs.isBoardLocked = true;
     // delay 400-1200ms to make move feel more natural
     const delay = Math.random() * (1200 - 400) + 400;
-    this.sfController
-      .makeStockfishMove()
-      .then((stockfishMove) => {
-        setTimeout(() => {
-          this.mh.finalizeMove(stockfishMove);
-          this.mh.handleCheckAndCheckmate();
-          this.gs.isBoardLocked = false;
-          this.guiController.updateGUI();
-        }, delay);
-      })
-      .catch((error) => {
+
+    try {
+      const stockfishMove = await this.sfController.makeStockfishMove();
+      setTimeout(() => {
+        this.mh.finalizeMove(stockfishMove);
+        this.mh.handleCheckAndCheckmate();
         this.gs.isBoardLocked = false;
         this.guiController.updateGUI();
-        console.error("Error getting Stockfish move:", error);
-      });
+      }, delay);
+    } catch (error) {
+      this.gs.isBoardLocked = false;
+      this.guiController.updateGUI();
+      console.error("Error getting Stockfish move:", error);
+    }
   }
 
   requestStockfishAnalysis() {
     this.sfController.requestAnalysisIfNeeded();
+  }
+
+  cleanup() {
+    this.hidePromotionSelector("reset");
+    this.guiController.cleanup();
+    this.toggleAnalysis(false, "NNUE");
+    this.toggleAnalysis(false, "Classical");
+    this.sfController.cleanup();
   }
 }
 

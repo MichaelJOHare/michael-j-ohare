@@ -10,6 +10,8 @@ class GameLogPanel {
     this.currentMoveIndex = 0;
 
     this.gameLog = document.getElementById("move-history");
+    this.handleGameLogClick = this.handleGameLogClick.bind(this);
+    this.gameLog.addEventListener("click", this.handleGameLogClick);
   }
 
   updateGameLog() {
@@ -17,6 +19,10 @@ class GameLogPanel {
     this.clearGameLog();
     this.writeToGameLog();
     this.highlightCurrentMove();
+  }
+
+  clearGameLog() {
+    this.gameLog.innerHTML = "";
   }
 
   writeToGameLog() {
@@ -59,8 +65,6 @@ class GameLogPanel {
       moveSpan.id = moveId;
       moveSpan.innerHTML = pieceSpan + notation;
 
-      moveSpan.addEventListener("click", () => this.onClick(index));
-
       if (index === this.currentMoveIndex && !isUndone) {
         moveSpan.classList.add("current-move-highlight");
       }
@@ -71,10 +75,6 @@ class GameLogPanel {
     if (this.currentMoveIndex !== -1) {
       this.highlightCurrentMove();
     }
-  }
-
-  clearGameLog() {
-    this.gameLog.innerHTML = "";
   }
 
   createGameLogObject(move) {
@@ -147,6 +147,14 @@ class GameLogPanel {
     }
   }
 
+  handleGameLogClick(event) {
+    const moveSpan = event.target.closest(".move-history-entry");
+    if (moveSpan) {
+      const index = parseInt(moveSpan.id.replace("move-", ""), 10);
+      this.onClick(index);
+    }
+  }
+
   onClick(clickedIndex) {
     let currentMoveIndex = this.moveHistory.history.length - 1;
     let movesToUndoRedo = clickedIndex - currentMoveIndex;
@@ -168,6 +176,11 @@ class GameLogPanel {
     }
     this.currentMoveIndex = clickedIndex;
     this.highlightCurrentMove();
+  }
+
+  cleanup() {
+    this.gameLog.removeEventListener("click", this.handleGameLogClick);
+    this.clearGameLog();
   }
 }
 

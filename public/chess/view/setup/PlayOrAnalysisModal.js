@@ -183,18 +183,33 @@ class PlayOrAnalysisModal {
 
   handleResetBoardButtonClick = (event) => {
     event.stopPropagation();
-    this.gameController.toggleAnalysis(false, "NNUE");
-    this.gameController.toggleAnalysis(false, "Classical");
+    this.gameController.cleanup();
     this.resetBoardButton.removeEventListener(
       "click",
       this.handleResetBoardButtonClick
     );
-    this.gameController.hidePromotionSelector("reset");
     this.gameController = null;
     this.players = null;
     this.isAnalysisGame = true;
     this.strengthLevel = 0;
     this.colorSelection = null;
+
+    this.toggleSelected(this.analysisModeButton, false);
+    this.toggleSelected(this.vsComputerModeButton, false);
+    this.modalButtons.style.removeProperty("justify-content");
+
+    this.colorSelectionContainer
+      .querySelectorAll(".color-choice")
+      .forEach((element) => {
+        this.toggleSelected(element, false);
+      });
+
+    this.strengthLevelButtonsDiv
+      .querySelectorAll(".strength-level")
+      .forEach((element) => {
+        this.toggleSelected(element, false);
+      });
+
     this.initializeModal();
   };
 
