@@ -86,6 +86,10 @@ class GUIController {
     this.chessBoardPanel.drawBoard();
   }
 
+  toggleBoardFlip() {
+    this.chessBoardPanel.toggleBoardFlip();
+  }
+
   handleAnalysisArrow(fromSquare, toSquare) {
     this.chessBoardPanel.drawTemporaryAnalysisArrow(fromSquare, toSquare);
   }

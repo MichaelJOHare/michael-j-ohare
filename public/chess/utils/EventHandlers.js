@@ -33,8 +33,7 @@ class EventHandlers {
     this.dragInitiated = false;
     this.isDragging = false;
     this.isDrawing = false;
-    this.readyToDrawCircle = false;
-    this.lastTargetSquare = null;
+    this.hasMovedOutOfSquare = false;
     this.originalSquare = null;
     this.draggingPiece = null;
     this.startX = 0;
@@ -62,12 +61,15 @@ class EventHandlers {
           .getElementById("chessboard-container")
           .getBoundingClientRect();
         this.offsetX = event.clientX - rect.left;
+        // shift by half dpi-scaled square when dpi !== 1 so piece appears above finger on mobile
         this.offsetY = event.clientY - rect.top;
+        // - (this.unscaledSquareSize !== 0 ? this.unscaledSquareSize / 2 : 0);
+        //      - need better condition for this, should ideally only be true on mobile
 
-        this.draggingDiv.innerHTML = `<img src="${image.src}" width="${this.unscaledSquareSize}" height="${this.unscaledSquareSize}">`;
+        this.draggingDiv.innerHTML = `<img src="${image.src}" width="${this.squareSize}" height="${this.squareSize}">`;
         this.draggingDiv.style.transform = `translate(${
-          this.offsetX - this.unscaledSquareSize / 2
-        }px, ${this.offsetY - this.unscaledSquareSize / 2}px)`;
+          this.offsetX - this.squareSize / 2
+        }px, ${this.offsetY - this.squareSize / 2}px)`;
         this.draggingDiv.style.visibility = "visible";
 
         this.draggingPiece = piece;
@@ -85,6 +87,8 @@ class EventHandlers {
       );
       this.originalSquare = { row, col };
       this.isDrawing = true;
+      this.hasMovedOutOfSquare = false;
+      this.boardHighlighter.drawTemporaryCircle(this.originalSquare);
     }
   };
 
@@ -95,8 +99,8 @@ class EventHandlers {
         const moveY = event.clientY - this.startY;
 
         this.draggingDiv.style.transform = `translate(${
-          this.offsetX + moveX - this.unscaledSquareSize / 2
-        }px, ${this.offsetY + moveY - this.unscaledSquareSize / 2}px)`;
+          this.offsetX + moveX - this.squareSize / 2
+        }px, ${this.offsetY + moveY - this.squareSize / 2}px)`;
 
         const diffX = Math.abs(event.clientX - this.startX);
         const diffY = Math.abs(event.clientY - this.startY);
@@ -134,29 +138,18 @@ class EventHandlers {
         event.clientY
       );
       const currentSquare = { row, col };
+      const isInOriginalSquare =
+        row === this.originalSquare.row && col === this.originalSquare.col;
 
-      if (
-        !this.lastTargetSquare ||
-        this.lastTargetSquare.row !== row ||
-        this.lastTargetSquare.col !== col
-      ) {
-        this.lastTargetSquare = { row, col };
-        const distance = Math.sqrt(
-          Math.pow(event.clientX - this.startX, 2) +
-            Math.pow(event.clientY - this.startY, 2)
+      if (!isInOriginalSquare) {
+        this.hasMovedOutOfSquare = true;
+        this.boardHighlighter.drawTemporaryArrow(
+          this.originalSquare,
+          currentSquare
         );
-
-        // If right click drag inside original square -> draw circle
-        const drawThreshold = this.squareSize / 2;
-        if (distance < drawThreshold) {
-          this.readyToDrawCircle = true;
-        } else {
-          this.readyToDrawCircle = false;
-          this.boardHighlighter.drawTemporaryArrow(
-            this.originalSquare,
-            currentSquare
-          );
-        }
+      } else if (isInOriginalSquare && this.hasMovedOutOfSquare) {
+        this.hasMovedOutOfSquare = false;
+        this.boardHighlighter.drawTemporaryCircle(this.originalSquare);
       }
     }
   };
@@ -186,24 +179,15 @@ class EventHandlers {
         event.clientX,
         event.clientY
       );
-      const endCoords = { x: event.clientX, y: event.clientY };
-      const startCoords = { x: this.startX, y: this.startY };
-      const distance = Math.sqrt(
-        Math.pow(endCoords.x - startCoords.x, 2) +
-          Math.pow(endCoords.y - startCoords.y, 2)
-      );
-
-      if (distance < this.squareSize / 2) {
-        this.boardHighlighter.addCircle(this.originalSquare);
-      } else {
-        if (!this.readyToDrawCircle) {
+      if (this.isDrawing) {
+        if (this.hasMovedOutOfSquare) {
           this.boardHighlighter.addArrow(this.originalSquare, { row, col });
+        } else {
+          this.boardHighlighter.addCircle(this.originalSquare);
         }
       }
-
       this.isDrawing = false;
-      this.readyToDrawCircle = false;
-      this.lastTargetSquare = null;
+      this.hasMovedOutOfSquare = false;
     }
   };
 

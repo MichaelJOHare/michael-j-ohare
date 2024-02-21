@@ -182,6 +182,10 @@ class GameController {
     this.sfController.requestAnalysisIfNeeded();
   }
 
+  toggleBoardFlip() {
+    this.guiController.toggleBoardFlip();
+  }
+
   cleanup() {
     this.hidePromotionSelector("reset");
     this.guiController.cleanup();

@@ -50,6 +50,8 @@ class PlayOrAnalysisModal {
   }
 
   openModal() {
+    this.modalButtons.style.removeProperty("justify-content");
+    this.toggleVisibility("analysis");
     document.documentElement.classList.remove("modal-is-closing");
     document.documentElement.classList.add("modal-is-opening");
     this.modal.showModal();
@@ -160,6 +162,11 @@ class PlayOrAnalysisModal {
         Math.random() < 0.5 ? PlayerColor.WHITE : PlayerColor.BLACK;
     }
 
+    // default to level 1 if no strength level is selected
+    if (!isAnalysis && this.strengthLevel === 0) {
+      this.strengthLevel = 1;
+    }
+
     this.players = this.gameSetup.setupPlayers(
       isAnalysis,
       !isAnalysis,
@@ -174,6 +181,8 @@ class PlayOrAnalysisModal {
     this.removeModalEventListeners();
     this.closeModal();
     this.gameController.init();
+    finalColorSelection === PlayerColor.BLACK &&
+      this.gameController.toggleBoardFlip();
   };
 
   handleCloseButtonClick = () => {
