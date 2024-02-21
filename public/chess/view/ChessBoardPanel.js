@@ -227,29 +227,31 @@ class ChessBoardPanel {
 
   setScreen() {
     let dpi = window.devicePixelRatio || 1;
-
+    const screenWidth = window.innerWidth;
     const size = Math.min(
       this.boardContainer.offsetWidth,
       this.boardContainer.offsetHeight
     );
 
-    this.canvas.width = size * dpi;
-    this.canvas.height = size * dpi;
-    this.offscreenCanvas.width = size * dpi;
-    this.offscreenCanvas.height = size * dpi;
+    requestAnimationFrame(() => {
+      this.canvas.width = size * dpi;
+      this.canvas.height = size * dpi;
+      this.offscreenCanvas.width = size * dpi;
+      this.offscreenCanvas.height = size * dpi;
 
-    this.canvas.style.width = size + "px";
-    this.canvas.style.height = size + "px";
-    this.offscreenCanvas.style.width = size + "px";
-    this.offscreenCanvas.style.height = size + "px";
+      this.canvas.style.width = size + "px";
+      this.canvas.style.height = size + "px";
+      this.offscreenCanvas.style.width = size + "px";
+      this.offscreenCanvas.style.height = size + "px";
 
-    this.squareSize = (size * dpi) / 8;
-    this.svgSquareSize = size / 8;
+      this.squareSize = (size * dpi) / 8;
+      this.svgSquareSize = size / 8;
 
-    this.updateSquareSize();
-    this.reorderSidebarBasedOnScreenWidth();
-    this.updatePromotionSelector();
-    this.boardHighlighter.updatePersistentElements();
+      this.updateSquareSize();
+      this.reorderSidebarBasedOnScreenWidth(screenWidth);
+      this.updatePromotionSelector();
+      this.boardHighlighter.updatePersistentElements();
+    });
   }
 
   updatePromotionSelector() {
@@ -298,18 +300,22 @@ class ChessBoardPanel {
     fenBox.value = fenString;
   }
 
-  reorderSidebarBasedOnScreenWidth() {
-    const screenWidth = window.innerWidth;
+  reorderSidebarBasedOnScreenWidth(screenWidth) {
+    const gameContainer = document.getElementById("game-container");
     const chessboardWrapper = document.querySelector(".chessboard-wrapper");
     const sidebar = document.getElementById("sidebar");
     const textAreasContainer = document.getElementById("text-areas-container");
 
     const isSidebarInside = sidebar.parentNode === chessboardWrapper;
 
-    if (screenWidth <= 1010 && !isSidebarInside) {
-      chessboardWrapper.insertBefore(sidebar, textAreasContainer);
-    } else if (screenWidth > 1010 && isSidebarInside) {
-      document.getElementById("game-container").appendChild(sidebar);
+    if (screenWidth <= 1010) {
+      if (!isSidebarInside) {
+        chessboardWrapper.insertBefore(sidebar, textAreasContainer);
+      }
+    } else if (screenWidth > 1010) {
+      if (isSidebarInside) {
+        gameContainer.appendChild(sidebar);
+      }
     }
   }
 
@@ -318,9 +324,29 @@ class ChessBoardPanel {
     this.boardHighlighter.isBoardFlipped = this.isBoardFlipped;
     this.eventHandlers.isBoardFlipped = this.isBoardFlipped;
     this.promotionSelector.isBoardFlipped = this.isBoardFlipped;
+    this.flipEvalGauge();
     this.promotionSelector.flipPromotionSelector();
     this.boardHighlighter.updatePersistentElements();
     this.drawBoard();
+  }
+
+  flipEvalGauge() {
+    const evalGauge = document.getElementById("eval-gauge");
+    if (!evalGauge.classList.contains("hidden")) {
+      if (this.isBoardFlipped) {
+        evalGauge.style.setProperty("--pico-progress-color", "#181818");
+        evalGauge.style.setProperty(
+          "--pico-progress-background-color",
+          "#f0f0f0"
+        );
+      } else {
+        evalGauge.style.setProperty("--pico-progress-color", "#f0f0f0");
+        evalGauge.style.setProperty(
+          "--pico-progress-background-color",
+          "#181818"
+        );
+      }
+    }
   }
 
   setupEventListeners() {

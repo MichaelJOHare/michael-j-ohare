@@ -178,6 +178,7 @@ class PlayOrAnalysisModal {
       this.players.player2,
       this.strengthLevel
     );
+
     this.removeModalEventListeners();
     this.closeModal();
     this.gameController.init();

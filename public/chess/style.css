@@ -131,6 +131,37 @@ header hgroup {
   width: 100%;
 }
 
+#board-eval-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#eval-gauge-container {
+  height: 70vmin;
+  width: 20px;
+  min-width: 20px;
+  overflow: hidden;
+}
+
+#eval-gauge {
+  transform: rotate(-90deg) translateX(-69.9vmin);
+  transform-origin: left top;
+  --pico-progress-color: #f0f0f0;
+  --pico-progress-background-color: #181818;
+  width: 69.9vmin;
+  height: 20px;
+  min-height: 20px;
+  margin-bottom: 0;
+}
+
+html[data-theme="dark"] #eval-gauge {
+  border: #f0f0f0 1px solid;
+}
+
+html[data-theme="light"] #eval-gauge {
+  border: #181818 1px solid;
+}
+
 #chessboard-container {
   width: 70vmin;
   height: 70vmin;
@@ -161,6 +192,11 @@ header hgroup {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+}
+
+#depth-progress {
+  height: 5px;
+  margin-bottom: 0;
 }
 
 #sidebar {
@@ -324,11 +360,7 @@ html[data-theme="dark"] .black-piece {
   resize: vertical;
 }
 
-@media (max-width: 1010px) {
-  .hero {
-    width: 100%;
-  }
-
+@media (max-width: 1010px), (max-height: 850px) {
   #outer-container,
   #game-container,
   #text-areas-container {
@@ -345,20 +377,26 @@ html[data-theme="dark"] .black-piece {
   }
 
   .chessboard-wrapper {
-    width: 95vmin;
     margin-left: 0;
     padding: 10px;
-    order: 1;
   }
 
   #chessboard-container {
-    height: 90vmin;
-    width: 90vmin;
+    height: calc(95vmin - 20px);
+    width: calc(95vmin - 20px);
+  }
+
+  #eval-gauge-container {
+    height: 95vmin;
+  }
+
+  #eval-gauge {
+    transform: rotate(-90deg) translateX(-93.1vmin);
+    width: 93.1vmin;
   }
 
   #sidebar {
-    order: 2;
-    width: 90vmin;
+    width: 95vmin;
     height: fit-content;
     max-width: none;
     margin: 0;
@@ -401,7 +439,7 @@ html[data-theme="dark"] .black-piece {
   }
 
   #text-areas-container {
-    width: 90vmin;
+    width: 95vmin;
     margin-top: 0;
   }
 

@@ -65,22 +65,27 @@
     <div id="outer-container">
       <div id="game-container">
         <div class="chessboard-wrapper">
-          <div id="chessboard-container">
-            <canvas id="chessboard"></canvas>
-            <svg
-              id="chessSVG"
-              style="position: absolute; left: 0; top: 0; z-index: 2"
-            ></svg>
-            <div
-              class="draggingDiv"
-              id="draggingDiv"
-              style="
-                position: absolute;
-                visibility: hidden;
-                z-index: 2;
-                pointer-events: none;
-              "
-            ></div>
+          <div id="board-eval-container">
+            <div id="chessboard-container">
+              <canvas id="chessboard"></canvas>
+              <svg
+                id="chessSVG"
+                style="position: absolute; left: 0; top: 0; z-index: 2"
+              ></svg>
+              <div
+                class="draggingDiv"
+                id="draggingDiv"
+                style="
+                  position: absolute;
+                  visibility: hidden;
+                  z-index: 2;
+                  pointer-events: none;
+                "
+              ></div>
+            </div>
+            <div id="eval-gauge-container">
+              <progress id="eval-gauge" value="50" max="100"></progress>
+            </div>
           </div>
           <div id="text-areas-container">
             <div id="fen-title-box">
@@ -106,6 +111,12 @@
         <div id="sidebar">
           <div id="stockfish-analysis">
             <h5 id="stockfish-analysis-title">Stockfish Analysis</h5>
+            <progress
+              id="depth-progress"
+              class="hidden"
+              value="0"
+              max="100"
+            ></progress>
             <fieldset id="stockfish-analysis-toggle">
               <label>
                 <input

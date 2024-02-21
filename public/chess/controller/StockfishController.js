@@ -277,6 +277,8 @@ class StockfishController {
           this._updateTemporaryAnalysisArrow(moveData[1]);
           this._lastDepthUpdated = depth;
           this._lastArrowUpdate = currentTime;
+          // update current centipawn eval
+          // update eval gauge (inverse if board flipped)
         }
       }
     }
@@ -355,6 +357,12 @@ class StockfishController {
 
   async toggleAnalysis(enable, analysisType) {
     if (enable) {
+      // remove sf analysis title, add current centipawn eval
+      document
+        .getElementById("eval-gauge-container")
+        .classList.remove("hidden");
+      document.getElementById("sidebar").style.marginLeft = "5px";
+
       const wasNNUEEnabled = this._isNNUEAnalysisEnabled;
       const wasClassicalEnabled = this._isClassicalAnalysisEnabled;
       if (analysisType === "NNUE") {
@@ -372,6 +380,16 @@ class StockfishController {
       this.gui.clearBestMoveArrow();
       await this._ensureEngineInitialized();
       this.requestAnalysisIfNeeded();
+    } else if (
+      (!enable &&
+        analysisType === "NNUE" &&
+        !this._isClassicalAnalysisEnabled) ||
+      (!enable && analysisType === "Classical" && !this._isNNUEAnalysisEnabled)
+    ) {
+      // add sf analysis title, remove current centipawn eval
+      document.getElementById("eval-gauge-container").classList.add("hidden");
+      document.getElementById("sidebar").style.marginLeft = "20px";
+      this.cleanup();
     } else if (!enable) {
       if (analysisType === "NNUE") {
         this._isNNUEAnalysisEnabled = false;
@@ -379,15 +397,7 @@ class StockfishController {
       if (analysisType === "Classical") {
         this._isClassicalAnalysisEnabled = false;
       }
-      // Figure out better way to do this, want to check if toggling off the only active analysis but maybe just leave as is
-    } /*  else if (
-      !enable &&
-      !this._isNNUEAnalysisEnabled &&
-      !this._isClassicalAnalysisEnabled
-    ) {
-      this._isAnalysisMode = false;
-      this.cleanup();
-    } */
+    }
   }
 
   requestAnalysisIfNeeded() {

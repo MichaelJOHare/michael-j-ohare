@@ -5,6 +5,7 @@ const playOrAnalysisModal = new PlayOrAnalysisModal();
 /*
 TO DO:
  - Show current depth/sf advantage in analysis mode
+  - centipawn eval in place of sf analysis title when under 1010px width
 
  - Implement captured pieces/material advantage
       
@@ -16,4 +17,6 @@ TO DO:
       - Add sounds
  
  - Implement PGN box
+
+  - Once finished with everything, maybe think about splitting up into custom elements or maybe even turning this into a react app
 */

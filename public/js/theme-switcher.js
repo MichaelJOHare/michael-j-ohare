@@ -8,7 +8,7 @@
 const themeSwitcher = {
   // Config
   _scheme: "auto",
-  menuTarget: "details[role='list']",
+  menuTarget: "details[class='dropdown']",
   buttonsTarget: "a[data-theme-switcher]",
   buttonAttribute: "data-theme-switcher",
   rootAttribute: "data-theme",
