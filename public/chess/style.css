@@ -141,6 +141,7 @@ header hgroup {
   width: 20px;
   min-width: 20px;
   overflow: hidden;
+  margin-left: 2px;
 }
 
 #eval-gauge {
@@ -159,6 +160,14 @@ html[data-theme="dark"] #eval-gauge {
 }
 
 html[data-theme="light"] #eval-gauge {
+  border: #181818 1px solid;
+}
+
+html[data-theme="dark"] #depth-progress {
+  border: #f0f0f0 1px solid;
+}
+
+html[data-theme="light"] #depth-progress {
   border: #181818 1px solid;
 }
 
@@ -195,8 +204,8 @@ html[data-theme="light"] #eval-gauge {
 }
 
 #depth-progress {
-  height: 5px;
-  margin-bottom: 0;
+  height: 7px;
+  margin-bottom: 5px;
 }
 
 #sidebar {

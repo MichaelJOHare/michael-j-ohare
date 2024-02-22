@@ -48,6 +48,7 @@ class GameController {
   }
 
   initiateGameFromFEN(fenString) {
+    // test if state resets properly
     const boardContext = this.board.initializeBoardFromFEN(
       fenString,
       this.gs.getPlayer1(),
@@ -184,6 +185,10 @@ class GameController {
 
   toggleBoardFlip() {
     this.guiController.toggleBoardFlip();
+  }
+
+  setStockfishBoardFlipped(isFlipped) {
+    this.sfController.setBoardFlipped(isFlipped);
   }
 
   cleanup() {

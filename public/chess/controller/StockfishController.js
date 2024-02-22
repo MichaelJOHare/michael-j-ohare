@@ -38,6 +38,8 @@ class StockfishController {
     this._isNNUEAnalysisEnabled = false;
     this._isClassicalAnalysisEnabled = false;
     this._isAnalysisMode = this.strengthLevel === 0;
+    this._isEvalDepthBarsEnabled = false;
+    this._isBoardFlipped = false;
 
     this._lastCommand = "";
     this._lastArrowUpdate = Date.now();
@@ -266,6 +268,13 @@ class StockfishController {
     if (this.strengthLevel === 0) {
       const depth = parseInt(data.split(" ")[2], 10);
       const currentTime = Date.now();
+      const depthProgress = document.getElementById("depth-progress");
+      if (depthProgress) {
+        const depthPercentage = (depth / 24) * 100;
+        depthProgress.setAttribute("value", depthPercentage);
+        // maybe update a div current depth / 24
+      }
+
       if (
         depth === 1 ||
         (depth - this._lastDepthUpdated >= StockfishController.DEPTH_INTERVAL &&
@@ -277,10 +286,33 @@ class StockfishController {
           this._updateTemporaryAnalysisArrow(moveData[1]);
           this._lastDepthUpdated = depth;
           this._lastArrowUpdate = currentTime;
-          // update current centipawn eval
-          // update eval gauge (inverse if board flipped)
         }
       }
+      // update current centipawn eval (maybe move this and _updateEvalGauge inside if statement?)
+      this._updateEvalGauge(data);
+    }
+  }
+
+  _updateEvalGauge(data) {
+    const evalMatch = data.match(/score cp (\-?\d+)/);
+    const evalGauge = document.getElementById("eval-gauge");
+    if (evalGauge && evalMatch) {
+      let evalValue = parseInt(evalMatch[1], 10);
+      let evalProgress = 50;
+      const evalCap = 500;
+
+      if (evalValue > evalCap) evalValue = evalCap;
+      if (evalValue < -evalCap) evalValue = -evalCap;
+
+      if (this._isBoardFlipped) {
+        evalProgress -= (evalValue / evalCap) * 50;
+      } else {
+        evalProgress += (evalValue / evalCap) * 50;
+      }
+
+      evalProgress = Math.max(0, Math.min(100, evalProgress));
+
+      evalGauge.setAttribute("value", evalProgress);
     }
   }
 
@@ -355,14 +387,33 @@ class StockfishController {
     return threads;
   }
 
-  async toggleAnalysis(enable, analysisType) {
-    if (enable) {
-      // remove sf analysis title, add current centipawn eval
+  _toggleEvalDepthBars(enable) {
+    if (enable && !this._isEvalDepthBarsEnabled) {
+      // TODO: add current centipawn eval
+      document
+        .getElementById("stockfish-analysis-title")
+        .classList.add("hidden");
+      document.getElementById("depth-progress").classList.remove("hidden");
       document
         .getElementById("eval-gauge-container")
         .classList.remove("hidden");
       document.getElementById("sidebar").style.marginLeft = "5px";
+      this._isEvalDepthBarsEnabled = true;
+    } else if (!enable && this._isEvalDepthBarsEnabled) {
+      // TODO: remove current centipawn eval
+      document
+        .getElementById("stockfish-analysis-title")
+        .classList.remove("hidden");
+      document.getElementById("depth-progress").classList.add("hidden");
+      document.getElementById("eval-gauge-container").classList.add("hidden");
+      document.getElementById("sidebar").style.marginLeft = "20px";
+      this._isEvalDepthBarsEnabled = false;
+    }
+  }
 
+  async toggleAnalysis(enable, analysisType) {
+    if (enable) {
+      this._toggleEvalDepthBars(true);
       const wasNNUEEnabled = this._isNNUEAnalysisEnabled;
       const wasClassicalEnabled = this._isClassicalAnalysisEnabled;
       if (analysisType === "NNUE") {
@@ -386,9 +437,7 @@ class StockfishController {
         !this._isClassicalAnalysisEnabled) ||
       (!enable && analysisType === "Classical" && !this._isNNUEAnalysisEnabled)
     ) {
-      // add sf analysis title, remove current centipawn eval
-      document.getElementById("eval-gauge-container").classList.add("hidden");
-      document.getElementById("sidebar").style.marginLeft = "20px";
+      this._toggleEvalDepthBars(false);
       this.cleanup();
     } else if (!enable) {
       if (analysisType === "NNUE") {
@@ -426,6 +475,10 @@ class StockfishController {
     return new Promise((resolve) => {
       this._moveResolver = resolve;
     });
+  }
+
+  setBoardFlipped(isFlipped) {
+    this._isBoardFlipped = isFlipped;
   }
 
   cleanup() {

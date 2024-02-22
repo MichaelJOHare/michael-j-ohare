@@ -325,6 +325,7 @@ class ChessBoardPanel {
     this.eventHandlers.isBoardFlipped = this.isBoardFlipped;
     this.promotionSelector.isBoardFlipped = this.isBoardFlipped;
     this.flipEvalGauge();
+    this.guiController.setStockfishBoardFlipped(this.isBoardFlipped);
     this.promotionSelector.flipPromotionSelector();
     this.boardHighlighter.updatePersistentElements();
     this.drawBoard();

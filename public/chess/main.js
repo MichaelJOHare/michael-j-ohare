@@ -4,8 +4,11 @@ const playOrAnalysisModal = new PlayOrAnalysisModal();
 
 /*
 TO DO:
- - Show current depth/sf advantage in analysis mode
-  - centipawn eval in place of sf analysis title when under 1010px width
+  - FIX - toggle off one analysis auto toggles on the other (!IMPORTANT! make sure both are never on at the same time)
+
+  - shift sf analysis switches to right and add centipawn eval when in analysis toggled on
+      - fix depth progress bar under 1010px width
+      - find way to add 20px width height to chessboard container when in analysis mode but analysis toggled off
 
  - Implement captured pieces/material advantage
       
@@ -15,8 +18,10 @@ TO DO:
 
  - Make move piece with click a smooth glide to location
       - Add sounds
+
+ - Test if importtGameFromFEN resets state properly
  
  - Implement PGN box
 
-  - Once finished with everything, maybe think about splitting up into custom elements or maybe even turning this into a react app
+  - Once finished with everything, maybe think about splitting HTML into custom elements or maybe even turning this into a react app
 */

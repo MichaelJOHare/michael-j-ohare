@@ -90,6 +90,10 @@ class GUIController {
     this.chessBoardPanel.toggleBoardFlip();
   }
 
+  setStockfishBoardFlipped(isFlipped) {
+    this.gameController.setStockfishBoardFlipped(isFlipped);
+  }
+
   handleAnalysisArrow(fromSquare, toSquare) {
     this.chessBoardPanel.drawTemporaryAnalysisArrow(fromSquare, toSquare);
   }
