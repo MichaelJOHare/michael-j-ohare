@@ -4,7 +4,6 @@ const playOrAnalysisModal = new PlayOrAnalysisModal();
 
 /*
 TO DO:
-  - FIX - toggle off one analysis auto toggles on the other (!IMPORTANT! make sure both are never on at the same time)
 
   - shift sf analysis switches to right and add centipawn eval when in analysis toggled on
       - fix depth progress bar under 1010px width

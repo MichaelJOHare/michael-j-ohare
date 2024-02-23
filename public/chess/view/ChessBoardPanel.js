@@ -407,8 +407,9 @@ class ChessBoardPanel {
       (event) => {
         const isChecked = event.target.checked;
         this.guiController.toggleAnalysis(isChecked, "NNUE");
-        document.getElementById("sf-classical-analysis-checkbox").checked =
-          !isChecked;
+        document.getElementById(
+          "sf-classical-analysis-checkbox"
+        ).checked = false;
       }
     );
 
@@ -418,8 +419,7 @@ class ChessBoardPanel {
       (event) => {
         const isChecked = event.target.checked;
         this.guiController.toggleAnalysis(isChecked, "Classical");
-        document.getElementById("sf-NNUE-analysis-checkbox").checked =
-          !isChecked;
+        document.getElementById("sf-NNUE-analysis-checkbox").checked = false;
       }
     );
 
