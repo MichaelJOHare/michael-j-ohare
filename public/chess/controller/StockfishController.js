@@ -295,6 +295,7 @@ class StockfishController {
 
   _updateEvalGauge(data) {
     const evalMatch = data.match(/score cp (\-?\d+)/);
+    const evalMateMatch = data.match(/score mate (\-?\d+)/);
     const evalGauge = document.getElementById("eval-gauge");
     if (evalGauge && evalMatch) {
       let evalValue = parseInt(evalMatch[1], 10);
@@ -313,6 +314,9 @@ class StockfishController {
       evalProgress = Math.max(0, Math.min(100, evalProgress));
 
       evalGauge.setAttribute("value", evalProgress);
+    }
+    if (evalMateMatch) {
+      evalGauge.setAttribute("value", 100);
     }
   }
 
